@@ -1,0 +1,53 @@
+<template>
+  <section class="app-main">
+    <transition name="fade-transform" mode="out-in">
+      <keep-alive :include="cachedViews">
+        <router-view :key="key" v-if="reactiveFromParent" />
+      </keep-alive>
+    </transition>
+  </section>
+</template>
+
+<script>
+export default {
+  name: 'AppMain',
+  inject: ['getIfRouterAlive'],
+  computed: {
+    cachedViews() {
+      return this.$store.state.tagsView.cachedViews
+    },
+    key() {
+      return this.$route.fullPath
+    },
+    reactiveFromParent () {
+      return this.getIfRouterAlive()
+    }
+  },
+  watch: {
+    'reactiveFromParent': function (val) {
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.hasTagsView {
+  .app-main {
+    /* 84 = navbar + tags-view = 50 + 34 */
+    min-height: calc(100vh - 84px);
+  }
+
+  .fixed-header + .app-main {
+    padding-top: 84px;
+  }
+}
+</style>
+
+<style lang="scss">
+// fix css style bug in open el-dialog
+.el-popup-parent--hidden {
+  .fixed-header {
+    padding-right: 15px;
+  }
+}
+</style>
