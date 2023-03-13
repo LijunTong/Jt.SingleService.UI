@@ -23,106 +23,61 @@ export const defaultRoutes = [
     hidden: true
   },
   {
-    path: '/',
-    redirect:'/stats',
-    component: Layout,
-    hidden: false,
-    children: [{
-      name:'stats',
-      path: '/stats',
-      component: () => import('@/views/dashboard/stats'),
-      meta: { title: '首页',icon:'iconfont icon-dashboard',affix:true }
-    }]
-  },
-  {
-    path: '/system',
-    redirect:'/menu',
-    component: Layout,
-    hidden: false,
-    meta: { title: '系统管理',icon:'iconfont icon-setting' },
-    children: [{
-      name:'menus',
-      path: '/menu',
-      component: () => import('@/views/menu/indexv2'),
-      meta: { title: '权限管理',icon:'iconfont icon-menu' }
-    },{
-      name:'user',
-      path: '/user',
-      component: () => import('@/views/user/index'),
-      meta: { title: '用户管理',icon:'iconfont icon-user' }
-    },{
-      name:'role',
-      path: '/role',
-      component: () => import('@/views/role/index'),
-      meta: { title: '角色管理',icon:'iconfont icon-safetycertificate-f' }
-    },{
-      name:'user_info',
-      path: '/user/info',
-      component: () => import('@/views/user/info'),
-      meta: { title: '个人信息',icon:'iconfont icon-user' }
-    }]
-  },
-  {
-    path: '/log',
-    redirect:'/sys_log',
-    component: Layout,
-    hidden: false,
-    meta: { title: '日志管理',icon:'iconfont icon-reconciliation' },
-    children: [{
-      name:'sys_log',
-      path: '/sys_log',
-      component: () => import('@/views/sys_log/index'),
-      meta: { title: '系统日志',icon:'iconfont icon-read' }
-    }]
-  },
-  {
-    path: '/codegener',
-    redirect:'/code',
-    component: Layout,
-    hidden: false,
-    meta: { title: '代码平台',icon:'iconfont icon-code' },
-    children: [{
-      name:'code_db',
-      path: '/code_db',
-      component: () => import('@/views/code_db/index'),
-      meta: { title: '数据源',icon:'iconfont icon-database' }
-    },{
-      name:'code_temp',
-      path: '/code_temp',
-      component: () => import('@/views/code_temp/index'),
-      meta: { title: '代码模板',icon:'iconfont icon-file-text' }
-    },{
-      name:'code_gen_scheme',
-      path: '/code_gen_scheme',
-      component: () => import('@/views/code_gen_scheme/index'),
-      meta: { title: '模板方案',icon:'iconfont icon-shop' }
-    },{
-      name:'code',
-      path: '/code',
-      component: () => import('@/views/code/index'),
-      meta: { title: '代码生成',icon:'iconfont icon-appstoreadd' }
-    }]
-  },
-  {
     path: '/404',
-    component: FrontLayout,
+    component: Layout,
     hidden: true,
     children: [{
       path: '',
       component: () => import('@/views/404'),
       meta: { title: '404' }
     }]
-  },
+  }
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  //{ path: '*', redirect: '/404', hidden: true }
 ]
 
- const createRouter = () => {
+const getFrontMenu = async () => {
+  let res1 = await menuApi.getFrontMenu()
+  if (res1 && res1.success) {
+    res1.data.forEach(element => {
+      constantRoutes.push(initRoutesV2(element))
+    });
+  }
+}
+
+const getMenuTree = async () => {
+  let res2 = await menuApi.getMenuTree()
+  if (res2 && res2.code === 1) {
+    res2.data.forEach(element => {
+      constantRoutes.push(initRoutesV2(element))
+    });
+    console.log(1);
+    console.log(constantRoutes);
+  }
+}
+
+let constantRoutes = []
+const createRouter = () => {
+
+  defaultRoutes.forEach(element => {
+    constantRoutes.push(element)
+  });
+
+  getMenuTree().then(() => {
+    console.log(2);
+    let route404 = { path: '*', redirect: '/404', hidden: true }// 404 page must be placed at the end !!!
+    constantRoutes.push(route404)
+  });
+
+  // 手动阻塞
+  
+
   return new Router({
     // mode: 'history', // require service support
     scrollBehavior: () => ({ y: 0 }),
-    routes: defaultRoutes
+    routes: constantRoutes
   })
+
 }
 
 const router = createRouter()
