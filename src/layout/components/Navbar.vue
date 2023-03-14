@@ -10,7 +10,7 @@
 
     <div class="right-menu">
       <!-- <search id="header-search" class="right-menu-item" /> -->
-      <!-- <RefreshBtn id="RefreshBtn" class="right-menu-item hover-effect" /> -->
+      <RefreshBtn id="RefreshBtn" class="right-menu-item hover-effect" />
       <screenfull id="screenfull" class="right-menu-item hover-effect" />
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">

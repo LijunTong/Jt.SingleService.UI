@@ -149,12 +149,18 @@ export default {
               const { data } = result
               const userInfo = { username, token: data.accessToken, userId: data.userInfo.id }
               this.$store.dispatch('user/login', userInfo)
-              if (this.redirect) {
+              menuApi.getMenuTree().then(res => {
+                if (res.code === 1) {
+                  this.$store.dispatch('user/setMenus', res.data)
+                  resetRouter()
+                  if (this.redirect) {
                     this.$router.push({ path: this.redirect || '/' })
                   }
                   else {
                     this.$router.go(0)
                   }
+                }
+              })
             }
             this.loading = false
           }).catch(() => {

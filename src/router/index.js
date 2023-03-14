@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import store from '@/store'
 import * as menuApi from '@/api/menu'
+import { getMenus } from '@/utils/auth'
 
 Vue.use(Router)
 
@@ -56,28 +57,25 @@ const getMenuTree = async () => {
   }
 }
 
-let constantRoutes = []
 const createRouter = () => {
-
+  let constantRoutes = []
   defaultRoutes.forEach(element => {
     constantRoutes.push(element)
   });
 
-  getMenuTree().then(() => {
-    console.log(2);
-    let route404 = { path: '*', redirect: '/404', hidden: true }// 404 page must be placed at the end !!!
-    constantRoutes.push(route404)
-  });
-
-  // 手动阻塞
-  
-
+  let menus = getMenus()
+  if (menus && menus.length > 0) {
+    menus.forEach(element => {
+      constantRoutes.push(initRoutesV2(element))
+    });
+  }
+  let route404 = { path: '*', redirect: '/404', hidden: true }// 404 page must be placed at the end !!!
+  constantRoutes.push(route404)
   return new Router({
     // mode: 'history', // require service support
     scrollBehavior: () => ({ y: 0 }),
     routes: constantRoutes
   })
-
 }
 
 const router = createRouter()
