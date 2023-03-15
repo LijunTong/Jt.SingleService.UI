@@ -28,8 +28,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   async response => {
     const res = response.data
-    console.log(res);
-    // status !== 200 表示操作异常
+    
     if (res.code !== 1) {
       // 401 accessToken 过期了，登录过期了
       if (res.code === 1401) {
@@ -75,7 +74,7 @@ service.interceptors.response.use(
         })
       }
       //服务端异常
-      else if(res.code) {
+      else if(res.code >= 0) {
         Message({
           message: res.msg || '请求失败',
           type: 'error',

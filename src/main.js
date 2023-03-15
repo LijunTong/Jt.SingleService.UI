@@ -24,6 +24,9 @@ Vue.use(components)
 import VueClipBoard from 'vue-clipboard2'
 Vue.use(VueClipBoard);
 
+import VueParticles from 'vue-particles'
+Vue.use(VueParticles)
+
 //图标选择器，其实不建议全局注册
 import eIconPicker from 'e-icon-picker';
 import "e-icon-picker/lib/symbol.js"; //基本彩色图标库

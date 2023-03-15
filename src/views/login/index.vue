@@ -1,5 +1,24 @@
 <template>
   <div class="login-container">
+    <vue-particles
+      color="#409EFF"
+      :particleOpacity="0.7"
+      :particlesNumber="60"
+      shapeType="circle"
+      :particleSize="6"
+      linesColor="#409EFF"
+      :linesWidth="1"
+      :lineLinked="true"
+      :lineOpacity="0.4"
+      :linesDistance="150"
+      :moveSpeed="3"
+      :hoverEffect="true"
+      hoverMode="grab"
+      :clickEffect="true"
+      clickMode="push"
+    >
+    </vue-particles>
+
     <el-form
       ref="loginForm"
       :model="loginForm"
@@ -72,110 +91,120 @@
 </template>
 
 <script>
-import * as userApi from '@/api/user'
+import * as userApi from "@/api/user";
 import getTitle from "@/utils/get-page-title";
-import * as menuApi from '@/api/menu'
-import { resetRouter } from '@/router'
+import * as menuApi from "@/api/menu";
+import { resetRouter } from "@/router";
 export default {
-  name: 'Login',
+  name: "Login",
   mounted() {
     this.title = getTitle();
   },
   data() {
     const validateUsername = (rule, value, callback) => {
       if (value.length < 5 || value.length > 12) {
-        callback(new Error('用户名长度必须在[5,12]之间'))
+        callback(new Error("用户名长度必须在[5,12]之间"));
       } else {
         // store.modules.user
         userApi.checkUserName(value).then((result) => {
           if (result.code === 1) {
             if (!result.data) {
-              callback(new Error('用户名不存在'))
+              callback(new Error("用户名不存在"));
             }
           }
           callback();
-        })
+        });
       }
-    }
+    };
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6 || value.length > 18) {
-        callback(new Error('密码长度必须在[6,18]之间'))
+        callback(new Error("密码长度必须在[6,18]之间"));
       } else {
-        callback()
+        callback();
       }
-    }
+    };
     return {
       loginForm: {
-        username: '',
-        password: ''
+        username: "",
+        password: "",
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        username: [
+          { required: true, trigger: "blur", validator: validateUsername },
+        ],
+        password: [
+          { required: true, trigger: "blur", validator: validatePassword },
+        ],
       },
       loading: false,
-      passwordType: 'password',
+      passwordType: "password",
       redirect: undefined,
-      title: ''
-    }
+      title: "",
+    };
   },
   watch: {
     $route: {
       handler: function (route) {
-        this.redirect = route.query && route.query.redirect
+        this.redirect = route.query && route.query.redirect;
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   methods: {
     showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
+      if (this.passwordType === "password") {
+        this.passwordType = "";
       } else {
-        this.passwordType = 'password'
+        this.passwordType = "password";
       }
       this.$nextTick(() => {
-        this.$refs.password.focus()
-      })
+        this.$refs.password.focus();
+      });
     },
     handleLogin() {
-      this.$refs.loginForm.validate(valid => {
+      this.$refs.loginForm.validate((valid) => {
         if (valid) {
-          this.loading = true
-          const { username, password } = this.loginForm
-          const data = { username, password }
-          userApi.login(data).then((result) => {
-            if (result.code === 1) {
-              const { data } = result
-              const userInfo = { username, token: data.accessToken, userId: data.userInfo.id }
-              this.$store.dispatch('user/login', userInfo)
-              menuApi.getMenuTree().then(res => {
-                if (res.code === 1) {
-                  this.$store.dispatch('user/setMenus', res.data)
-                  resetRouter()
-                  if (this.redirect) {
-                    this.$router.push({ path: this.redirect || '/' })
+          this.loading = true;
+          const { username, password } = this.loginForm;
+          const data = { username, password };
+          userApi
+            .login(data)
+            .then((result) => {
+              if (result.code === 1) {
+                const { data } = result;
+                const userInfo = {
+                  username,
+                  token: data.accessToken,
+                  userId: data.userInfo.id,
+                };
+                this.$store.dispatch("user/login", userInfo);
+                menuApi.getMenuTree().then((res) => {
+                  if (res.code === 1) {
+                    this.$store.dispatch("user/setMenus", res.data);
+                    resetRouter();
+                    if (this.redirect) {
+                      this.$router.push({ path: this.redirect || "/" });
+                    } else {
+                      this.$router.go(0);
+                    }
                   }
-                  else {
-                    this.$router.go(0)
-                  }
-                }
-              })
-            }
-            this.loading = false
-          }).catch(() => {
-            this.loading = false
-          })
+                });
+              }
+              this.loading = false;
+            })
+            .catch(() => {
+              this.loading = false;
+            });
         } else {
-          return false
+          return false;
         }
-      })
+      });
     },
     handlerRegister() {
-      this.$router.push({ path: '/register' })
-    }
-  }
-}
+      this.$router.push({ path: "/register" });
+    },
+  },
+};
 </script>
 
 <style lang="scss">
@@ -222,6 +251,12 @@ $cursor: #fff;
     border-radius: 5px;
     color: #454545;
   }
+}
+
+#particles-js {
+  width: 100%;
+  height: calc(100% - 100px);
+  position: absolute;
 }
 </style>
 

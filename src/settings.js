@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: '博客',
+  title: '系统',
   tagsView: true,
   /**
    * @type {boolean} true | false
