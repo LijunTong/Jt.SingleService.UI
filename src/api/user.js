@@ -102,3 +102,11 @@ export function bindUserRole(userRoles) {
       data:  userRoles 
   })
 }
+
+export function updateAvatar(data) {
+  return request({
+      url: '/User/UpdateAvatar',
+      method: 'post',
+      data
+  })
+}
