@@ -6,11 +6,18 @@
           <el-form-item label="头像">
             <el-upload
               class="avatar-uploader"
-              :action="avatarAction"
+              action="http://localhost:5047/File/UploadAvatar"
               :show-file-list="false"
+              :before-upload="beforeAvatarUpload"
               :on-success="handleAvatarSuccess"
-              :before-upload="beforeAvatarUpload">
-              <img v-if="userInfo.avatar" :src="process.env.VUE_APP_BASE_API + userInfo.avatar" class="avatar">
+              
+            >
+            <!-- :http-request="onUpload" -->
+              <img
+                v-if="userInfo.avatar"
+                :src="avatar"
+                class="avatar"
+              />
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
           </el-form-item>
@@ -24,7 +31,9 @@
             <el-input :value="userInfo.loginTime"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="warning" @click="handUserSubmitClick">提交</el-button>
+            <el-button type="warning" @click="handUserSubmitClick"
+              >提交</el-button
+            >
           </el-form-item>
         </el-form>
       </el-tab-pane>
@@ -36,19 +45,42 @@
           :rules="rules"
         >
           <el-form-item label="旧密码" prop="oldPwd">
-            <el-input v-model="userPwd.oldPwd" :type="oldPwdType" class="small-input">
-               <svg-icon slot="suffix" :icon-class="oldPwdType === 'password' ? 'eye' : 'eye-open'"  @click="showPwd(1)"/>
+            <el-input
+              v-model="userPwd.oldPwd"
+              :type="oldPwdType"
+              class="small-input"
+            >
+              <svg-icon
+                slot="suffix"
+                :icon-class="oldPwdType === 'password' ? 'eye' : 'eye-open'"
+                @click="showPwd(1)"
+              />
             </el-input>
-           
           </el-form-item>
-          <el-form-item label="新密码" prop="newPwd" >
-            <el-input v-model="userPwd.newPwd" :type="passwordType"  class="small-input">
-              <svg-icon slot="suffix" :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"  @click="showPwd(2)"/>
+          <el-form-item label="新密码" prop="newPwd">
+            <el-input
+              v-model="userPwd.newPwd"
+              :type="passwordType"
+              class="small-input"
+            >
+              <svg-icon
+                slot="suffix"
+                :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
+                @click="showPwd(2)"
+              />
             </el-input>
           </el-form-item>
           <el-form-item label="重复密码" prop="reNewPwd">
-            <el-input v-model="userPwd.reNewPwd" :type="repasswordType"  class="small-input">
-              <svg-icon slot="suffix" :icon-class="repasswordType === 'password' ? 'eye' : 'eye-open'"  @click="showPwd(3)"/>
+            <el-input
+              v-model="userPwd.reNewPwd"
+              :type="repasswordType"
+              class="small-input"
+            >
+              <svg-icon
+                slot="suffix"
+                :icon-class="repasswordType === 'password' ? 'eye' : 'eye-open'"
+                @click="showPwd(3)"
+              />
             </el-input>
           </el-form-item>
           <el-form-item>
@@ -68,7 +100,13 @@ export default {
   mounted() {
     this.userInfo.id = this.$store.getters.userId;
     this.getUserInfo(this.userInfo.id);
-    this.avatarAction = process.env.VUE_APP_BASE_API + "File/UploadAvatar";
+  },
+  computed: {
+    // 计算属性的 getter
+    avatar: function () {
+      // `this` 指向 vm 实例
+      return process.env.VUE_APP_BASE_API + this.userInfo.avatar
+    }
   },
   data() {
     const validatePassword = (rule, value, callback) => {
@@ -108,7 +146,7 @@ export default {
       oldPwdType: "password",
       passwordType: "password",
       repasswordType: "password",
-      avatarAction:""
+      avatarAction: ""
     };
   },
   methods: {
@@ -134,16 +172,16 @@ export default {
         }
       });
     },
-    handUserSubmitClick(){
-      if(!this.userInfo.avatar){
-        this.$message.warning('请先选择头像')
-        return
+    handUserSubmitClick() {
+      if (!this.userInfo.avatar) {
+        this.$message.warning("请先选择头像");
+        return;
       }
-      userApi.updateAvatar().then(res=>{
-        if(res.code === 1){
-          this.$message.info('提交成功')
+      userApi.updateAvatar(this.userInfo).then((res) => {
+        if (res.code === 1) {
+          this.$message.info("提交成功");
         }
-      })
+      });
     },
     showPwd(type) {
       if (type === 1) {
@@ -166,13 +204,7 @@ export default {
         }
       }
     },
-    handleAvatarSuccess(res, file) {
-      if(res.code === 1){
-        this.userInfo.avatar = res.data
-      }
-      this.userInfo.avatar = URL.createObjectURL(file.raw);
 
-    },
     beforeAvatarUpload(file) {
       // const isJPG = file.type === "image/jpeg";
       const isLt2M = file.size / 1024 / 1024 < 2;
@@ -185,32 +217,50 @@ export default {
       }
       return isLt2M;
     },
+    onUpload(file) {
+      console.log(file)
+      console.log(1111)
+      let formData = new FormData();
+      formData.append("file", file.file);
+      userApi.UploadAvatar(formData)
+        .then((res) => {
+          if(res.code === 1){
+            this.$message.success("上传成功");
+          }
+        });
+    },
+    handleAvatarSuccess(res, file) {
+      if (res.code === 1) {
+        this.userInfo.avatar = res.data;
+        this.$message.success("上传成功");
+      }
+      // this.userInfo.avatar = URL.createObjectURL(file.raw);
+    },
   },
 };
 </script>
 
 <style>
 .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-  .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
-  .avatar {
-    width: 178px;
-    height: 178px;
-    display: block;
-  }
+  border: 1px dashed #d9d9d9;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  color: #8c939d;
+  width: 10em;
+  height: 10em;
+  line-height: 10em;
+  text-align: center;
+}
+.avatar {
+  width: 10em;
+  height: 10em;
+  display: block;
+}
 </style>

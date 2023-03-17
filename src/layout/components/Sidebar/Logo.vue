@@ -31,7 +31,7 @@ export default {
   data() {
     return {
       title: 'Something',
-      logo: require('@/assets/logo.png')
+      logo: this.$store.state.settings.logo
     }
   }
 }

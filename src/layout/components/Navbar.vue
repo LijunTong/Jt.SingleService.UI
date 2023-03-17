@@ -19,13 +19,19 @@
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
-            <el-dropdown-item> <i class="iconfont icon-home"></i> 首页 </el-dropdown-item>
+            <el-dropdown-item>
+              <i class="iconfont icon-home"></i> 首页
+            </el-dropdown-item>
           </router-link>
           <router-link to="/user/info">
-            <el-dropdown-item> <i class="iconfont icon-user"></i> 个人中心 </el-dropdown-item>
+            <el-dropdown-item>
+              <i class="iconfont icon-user"></i> 个人中心
+            </el-dropdown-item>
           </router-link>
           <el-dropdown-item divided @click.native="handlerLogout">
-            <span style="display: block"><i class="iconfont icon-logout"></i> 溜了</span>
+            <span style="display: block"
+              ><i class="iconfont icon-logout"></i> 溜了</span
+            >
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -40,7 +46,7 @@ import Hamburger from "@/components/Hamburger";
 import Screenfull from "@/components/Screenfull";
 import Search from "@/components/HeaderSearch";
 import { logout, getInfo } from '@/api/user';
-import RefreshBtn from "@/components/RefreshBtn"
+import RefreshBtn from "@/components/RefreshBtn";
 
 export default {
   components: {
@@ -50,10 +56,23 @@ export default {
     Search,
     RefreshBtn
   },
+  mounted() {
+    let id = this.$store.getters.userId
+    getInfo(id).then(res=>{
+      if(res.code === 1){
+        this.avatar =process.env.VUE_APP_BASE_API + res.data.avatar
+      }
+    })
+  },
   computed: {
-    ...mapGetters(["sidebar", "avatar"]),
+    ...mapGetters(["sidebar"]),
     avatarUrl(){
-      return require('@/assets/avatar/avatar.jpg')
+      return this.avatar
+    }
+  },
+  data() {
+    return {
+      avatar:""
     }
   },
   methods: {

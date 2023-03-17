@@ -27,6 +27,7 @@
       label-position="left"
     >
       <div class="title-container">
+        <img :src="logo">
         <h3 class="title">{{ title }}·注册</h3>
       </div>
 
@@ -171,6 +172,7 @@ export default {
       repasswordType: "password",
       redirect: undefined,
       title: "",
+      logo: this.$store.state.settings.logo
     };
   },
   watch: {
@@ -319,13 +321,15 @@ $light_gray: #eee;
 
   .title-container {
     position: relative;
-
+    text-align: center;
     .title {
       font-size: 26px;
       color: $light_gray;
-      margin: 0px auto 40px auto;
       text-align: center;
       font-weight: bold;
+    }
+    img{
+      width: 6em;
     }
   }
 
