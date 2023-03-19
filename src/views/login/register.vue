@@ -1,5 +1,23 @@
 <template>
   <div class="login-container">
+    <vue-particles
+      color="#409EFF"
+      :particleOpacity="0.7"
+      :particlesNumber="60"
+      shapeType="circle"
+      :particleSize="6"
+      linesColor="#409EFF"
+      :linesWidth="1"
+      :lineLinked="true"
+      :lineOpacity="0.4"
+      :linesDistance="150"
+      :moveSpeed="3"
+      :hoverEffect="true"
+      hoverMode="grab"
+      :clickEffect="true"
+      clickMode="push"
+    >
+    </vue-particles>
     <el-form
       ref="loginForm"
       :model="loginForm"
@@ -9,7 +27,8 @@
       label-position="left"
     >
       <div class="title-container">
-        <h3 class="title">{{title}}·注册</h3>
+        <img :src="logo">
+        <h3 class="title">{{ title }}·注册</h3>
       </div>
 
       <el-form-item prop="username">
@@ -93,112 +112,119 @@
 </template>
 
 <script>
-import * as userApi from '@/api/user'
+import * as userApi from "@/api/user";
 import getTitle from "@/utils/get-page-title";
 
 var _this;
 export default {
-  name: 'Register',
+  name: "Register",
   mounted() {
     this.title = getTitle();
   },
   data() {
     const validateUsername = (rule, value, callback) => {
       if (value.length < 5 || value.length > 12) {
-        callback(new Error('用户名长度必须在[5,12]之间'))
+        callback(new Error("用户名长度必须在[5,12]之间"));
       } else {
         userApi.checkUserName(value).then((result) => {
           if (result.code === 1) {
             if (result.data) {
-              callback(new Error('用户名已存在'))
+              callback(new Error("用户名已存在"));
             }
           }
           callback();
-        })
+        });
       }
-    }
+    };
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6 || value.length > 18) {
-        callback(new Error('密码长度必须在[6,18]之间'))
+        callback(new Error("密码长度必须在[6,18]之间"));
       } else {
-        callback()
+        callback();
       }
-    }
+    };
     const validateRePassword = (rule, value, callback) => {
       if (value !== this.loginForm.password) {
-        callback(new Error('两次输入密码不一致'))
+        callback(new Error("两次输入密码不一致"));
+      } else {
+        callback();
       }
-      else {
-        callback()
-      }
-    }
+    };
     return {
       loginForm: {
-        username: '',
-        password: '',
-        repassword: ''
+        username: "",
+        password: "",
+        repassword: "",
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }],
-        repassword: [{ required: true, trigger: 'blur', validator: validateRePassword }]
+        username: [
+          { required: true, trigger: "blur", validator: validateUsername },
+        ],
+        password: [
+          { required: true, trigger: "blur", validator: validatePassword },
+        ],
+        repassword: [
+          { required: true, trigger: "blur", validator: validateRePassword },
+        ],
       },
       loading: false,
-      passwordType: 'password',
-      repasswordType: 'password',
+      passwordType: "password",
+      repasswordType: "password",
       redirect: undefined,
-      title:''
-    }
+      title: "",
+      logo: this.$store.state.settings.logo
+    };
   },
   watch: {
     $route: {
       handler: function (route) {
-        this.redirect = route.query && route.query.redirect
+        this.redirect = route.query && route.query.redirect;
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   methods: {
     showPwd(type) {
       if (type === 1) {
-        if (this.passwordType === 'password') {
-          this.passwordType = ''
+        if (this.passwordType === "password") {
+          this.passwordType = "";
         } else {
-          this.passwordType = 'password'
+          this.passwordType = "password";
         }
       } else {
-        if (this.repasswordType === 'password') {
-          this.repasswordType = ''
+        if (this.repasswordType === "password") {
+          this.repasswordType = "";
         } else {
-          this.repasswordType = 'password'
+          this.repasswordType = "password";
         }
       }
-
-
     },
     handlerBack() {
-      this.$router.push({ path: '/login' })
+      this.$router.push({ path: "/login" });
     },
     handlerRegister() {
-      this.$refs.loginForm.validate(valid => {
+      this.$refs.loginForm.validate((valid) => {
         if (valid) {
-          var data = { username: this.loginForm.username, password: this.loginForm.password }
-          userApi.register(data).then(res => {
+          var data = {
+            username: this.loginForm.username,
+            password: this.loginForm.password,
+          };
+          userApi.register(data).then((res) => {
             if (res.code === 1) {
               this.$message({
-                message: '注册成功，即将跳转至登录页',
-                type: 'success',
+                message: "注册成功，即将跳转至登录页",
+                type: "success",
                 onClose: () => {
-                  this.$router.push({ path: '/login' })
-                }
-              })
+                  this.$router.push({ path: "/login" });
+                },
+              });
             }
-          })
+          });
         }
-      })
-    }
-  }
-}
+      });
+    },
+  },
+};
 </script>
 
 <style lang="scss">
@@ -246,6 +272,11 @@ $cursor: #fff;
     color: #454545;
   }
 }
+#particles-js {
+  width: 100%;
+  height: calc(100% - 100px);
+  position: absolute;
+}
 </style>
 
 <style lang="scss" scoped>
@@ -290,13 +321,15 @@ $light_gray: #eee;
 
   .title-container {
     position: relative;
-
+    text-align: center;
     .title {
       font-size: 26px;
       color: $light_gray;
-      margin: 0px auto 40px auto;
       text-align: center;
       font-weight: bold;
+    }
+    img{
+      width: 6em;
     }
   }
 

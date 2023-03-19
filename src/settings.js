@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: '博客',
+  title: '系统',
   tagsView: true,
   /**
    * @type {boolean} true | false
@@ -12,5 +12,7 @@ module.exports = {
    * @type {boolean} true | false
    * @description Whether show the logo in sidebar
    */
-  sidebarLogo: true
+  sidebarLogo: true,
+
+  logo: process.env.VUE_APP_BASE_API + 'Files/logo.png'
 }

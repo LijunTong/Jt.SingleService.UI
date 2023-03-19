@@ -21,11 +21,11 @@
           ><i class="iconfont icon-delete"></i
         ></el-button>
       </el-tooltip>
-      <el-tooltip content="同步" placement="bottom" effect="light">
+      <!-- <el-tooltip content="同步" placement="bottom" effect="light">
         <el-button type="warning" size="mini" @click="reload"
           ><i class="iconfont icon-reload"></i
         ></el-button>
-      </el-tooltip>
+      </el-tooltip> -->
       <el-tooltip content="更新权限树" placement="bottom" effect="light">
         <el-button type="primary" size="mini" @click="initController"
           ><i class="iconfont icon-reload"></i
@@ -251,10 +251,8 @@ export default {
         path: [{ required: true, message: '路径不能为空', trigger: 'blur' }],
         redirect: [{ required: true, message: '跳转链接不能为空', trigger: 'blur' }],
         affix: [{ required: true, message: '固定不能为空', trigger: 'blur' }],
-        icon: [{ required: true, message: '图标不能为空', trigger: 'blur' }],
         hidden: [{ required: true, message: '是否显示不能为空', trigger: 'blur' }],
         sortIndex: [{ required: true, message: '排序不能为空', trigger: 'blur' }],
-        parentId: [{ required: true, message: '上级菜单不能为空', trigger: 'blur' }],
          controller: [{ required: true, message: '控制器不能为空', trigger: 'blur' }]
       },
       currentRow: null,
@@ -289,6 +287,7 @@ export default {
       this.dialogParams.type = 2
       let { id } = this.currentRow
       this.getMenus()
+      this.getMenuType()
       this.getController()
       api.get(id).then((res) => {
         if (res.code === 1) {
@@ -381,7 +380,7 @@ export default {
       api.list().then(res => {
         if (res.code === 1) {
           this.menus = []
-          let menu = { id: 0, title: '无' }
+          let menu = { id: '', title: '无' }
           this.menus.push(menu)
           res.data.forEach(element => {
             this.menus.push({ id: element.id, title: element.title })
@@ -413,7 +412,7 @@ export default {
         if (res.code === 1) {
           this.controllers = res.data
           this.controllers.push({
-            id:0,
+            id:'',
             name:'无'
           })
         }

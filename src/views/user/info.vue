@@ -3,6 +3,24 @@
     <el-tabs v-model="activeName" type="border-card">
       <el-tab-pane label="个人信息" name="info">
         <el-form ref="userForm" label-width="100px">
+          <el-form-item label="头像">
+            <el-upload
+              class="avatar-uploader"
+              action="http://localhost:5047/File/UploadAvatar"
+              :show-file-list="false"
+              :before-upload="beforeAvatarUpload"
+              :on-success="handleAvatarSuccess"
+              
+            >
+            <!-- :http-request="onUpload" -->
+              <img
+                v-if="userInfo.avatar"
+                :src="avatar"
+                class="avatar"
+              />
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </el-form-item>
           <el-form-item label="用户名">
             <el-input :value="userInfo.userName"></el-input>
           </el-form-item>
@@ -11,6 +29,11 @@
           </el-form-item>
           <el-form-item label="上次登录时间">
             <el-input :value="userInfo.loginTime"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="warning" @click="handUserSubmitClick"
+              >提交</el-button
+            >
           </el-form-item>
         </el-form>
       </el-tab-pane>
@@ -22,24 +45,43 @@
           :rules="rules"
         >
           <el-form-item label="旧密码" prop="oldPwd">
-            <el-input v-model="userPwd.oldPwd" :type="oldPwdType" class="small-input">
-               <svg-icon slot="suffix" :icon-class="oldPwdType === 'password' ? 'eye' : 'eye-open'"  @click="showPwd(1)"/>
+            <el-input
+              v-model="userPwd.oldPwd"
+              :type="oldPwdType"
+              class="small-input"
+            >
+              <svg-icon
+                slot="suffix"
+                :icon-class="oldPwdType === 'password' ? 'eye' : 'eye-open'"
+                @click="showPwd(1)"
+              />
             </el-input>
-           
           </el-form-item>
-          <el-form-item label="新密码" prop="newPwd" >
-            <el-input v-model="userPwd.newPwd" :type="passwordType"  class="small-input">
-              <svg-icon slot="suffix" :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"  @click="showPwd(2)"/>
+          <el-form-item label="新密码" prop="newPwd">
+            <el-input
+              v-model="userPwd.newPwd"
+              :type="passwordType"
+              class="small-input"
+            >
+              <svg-icon
+                slot="suffix"
+                :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
+                @click="showPwd(2)"
+              />
             </el-input>
-            
-        </span>
           </el-form-item>
           <el-form-item label="重复密码" prop="reNewPwd">
-            <el-input v-model="userPwd.reNewPwd" :type="repasswordType"  class="small-input">
-              <svg-icon slot="suffix" :icon-class="repasswordType === 'password' ? 'eye' : 'eye-open'"  @click="showPwd(3)"/>
+            <el-input
+              v-model="userPwd.reNewPwd"
+              :type="repasswordType"
+              class="small-input"
+            >
+              <svg-icon
+                slot="suffix"
+                :icon-class="repasswordType === 'password' ? 'eye' : 'eye-open'"
+                @click="showPwd(3)"
+              />
             </el-input>
-            
-        </span>
           </el-form-item>
           <el-form-item>
             <el-button type="warning" @click="handSubmitClick">提交</el-button>
@@ -52,99 +94,173 @@
 </template>
 
 <script>
-import * as userApi from '@/api/user'
+import * as userApi from "@/api/user";
 export default {
-  name:'user_info',
+  name: "user_info",
   mounted() {
-    this.userInfo.id = this.$store.getters.userId
-    this.getUserInfo(this.userInfo.id)
+    this.userInfo.id = this.$store.getters.userId;
+    this.getUserInfo(this.userInfo.id);
+  },
+  computed: {
+    // 计算属性的 getter
+    avatar: function () {
+      // `this` 指向 vm 实例
+      return process.env.VUE_APP_BASE_API + this.userInfo.avatar
+    }
   },
   data() {
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6 || value.length > 18) {
-        callback(new Error('密码长度必须在[6,18]之间'))
+        callback(new Error("密码长度必须在[6,18]之间"));
       } else {
-        callback()
+        callback();
       }
-    }
+    };
     const validateRePassword = (rule, value, callback) => {
       if (value !== this.userPwd.newPwd) {
-        callback(new Error('两次输入密码不一致'))
+        callback(new Error("两次输入密码不一致"));
+      } else {
+        callback();
       }
-      else {
-        callback()
-      }
-    }
+    };
     return {
-      activeName: 'info',
-      userInfo: {
-
-      },
+      activeName: "info",
+      userInfo: {},
       userPwd: {
-        userId: '',
-        oldPwd: '',
-        newPwd: '',
-        reNewPwd: ''
+        userId: "",
+        oldPwd: "",
+        newPwd: "",
+        reNewPwd: "",
       },
       rules: {
-        oldPwd: [{ required: true, trigger: 'blur', validator: validatePassword }],
-        newPwd: [{ required: true, trigger: 'blur', validator: validatePassword }],
-        reNewPwd: [{ required: true, trigger: 'blur', validator: validateRePassword }]
+        oldPwd: [
+          { required: true, trigger: "blur", validator: validatePassword },
+        ],
+        newPwd: [
+          { required: true, trigger: "blur", validator: validatePassword },
+        ],
+        reNewPwd: [
+          { required: true, trigger: "blur", validator: validateRePassword },
+        ],
       },
-      oldPwdType:'password',
-      passwordType: 'password',
-      repasswordType: 'password',
-
-    }
+      oldPwdType: "password",
+      passwordType: "password",
+      repasswordType: "password",
+      avatarAction: ""
+    };
   },
   methods: {
     getUserInfo(userId) {
-      userApi.getInfo(userId).then(res => {
-        this.userInfo = res.data
-      })
+      userApi.getInfo(userId).then((res) => {
+        this.userInfo = res.data;
+      });
     },
     handSubmitClick() {
-      this.$refs.pwdForm.validate(valid => {
+      this.$refs.pwdForm.validate((valid) => {
         if (valid) {
-          this.userPwd.userId = this.userInfo.id
-          userApi.editPwd(this.userPwd).then(res => {
+          this.userPwd.userId = this.userInfo.id;
+          userApi.editPwd(this.userPwd).then((res) => {
             if (res.code === 1) {
-              this.$confirm('密码修改成功, 请重新登录?', '提示', {
-                type: 'info'
+              this.$confirm("密码修改成功, 请重新登录?", "提示", {
+                type: "info",
               }).then(() => {
-                this.$store.dispatch('user/logout');
+                this.$store.dispatch("user/logout");
                 this.$router.push(`/login`);
-              })
+              });
             }
-          })
+          });
         }
-      })
+      });
+    },
+    handUserSubmitClick() {
+      if (!this.userInfo.avatar) {
+        this.$message.warning("请先选择头像");
+        return;
+      }
+      userApi.updateAvatar(this.userInfo).then((res) => {
+        if (res.code === 1) {
+          this.$message.info("提交成功");
+        }
+      });
     },
     showPwd(type) {
       if (type === 1) {
-        if (this.oldPwdType === 'password') {
-          this.oldPwdType = ''
+        if (this.oldPwdType === "password") {
+          this.oldPwdType = "";
         } else {
-          this.oldPwdType = 'password'
+          this.oldPwdType = "password";
         }
       } else if (type === 2) {
-        if (this.passwordType === 'password') {
-          this.passwordType = ''
+        if (this.passwordType === "password") {
+          this.passwordType = "";
         } else {
-          this.passwordType = 'password'
+          this.passwordType = "password";
         }
-      } else{
-        if (this.repasswordType === 'password') {
-          this.repasswordType = ''
+      } else {
+        if (this.repasswordType === "password") {
+          this.repasswordType = "";
         } else {
-          this.repasswordType = 'password'
+          this.repasswordType = "password";
         }
       }
     },
-  }
-}
+
+    beforeAvatarUpload(file) {
+      // const isJPG = file.type === "image/jpeg";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      // if (!isJPG) {
+      //   this.$message.error("上传头像图片只能是 JPG 格式!");
+      // }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+      }
+      return isLt2M;
+    },
+    onUpload(file) {
+      console.log(file)
+      console.log(1111)
+      let formData = new FormData();
+      formData.append("file", file.file);
+      userApi.UploadAvatar(formData)
+        .then((res) => {
+          if(res.code === 1){
+            this.$message.success("上传成功");
+          }
+        });
+    },
+    handleAvatarSuccess(res, file) {
+      if (res.code === 1) {
+        this.userInfo.avatar = res.data;
+        this.$message.success("上传成功");
+      }
+      // this.userInfo.avatar = URL.createObjectURL(file.raw);
+    },
+  },
+};
 </script>
 
 <style>
-
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  color: #8c939d;
+  width: 10em;
+  height: 10em;
+  line-height: 10em;
+  text-align: center;
+}
+.avatar {
+  width: 10em;
+  height: 10em;
+  display: block;
+}
 </style>

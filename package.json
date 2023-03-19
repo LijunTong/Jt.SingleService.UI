@@ -1,7 +1,7 @@
 {
   "name": "jtframework",
   "version": "1.0.1",
-  "description": "博客",
+  "description": "系统",
   "author": "joont",
   "scripts": {
     "dev": "vue-cli-service serve",
@@ -32,8 +32,10 @@
     "svg-baker-runtime": "^1.4.7",
     "vue": "2.6.10",
     "vue-clipboard2": "^0.3.3",
+    "vue-particles": "^1.0.9",
     "vue-router": "3.0.6",
     "vue-style-loader": "^4.1.3",
+    "vue-template-compiler": "^2.7.14",
     "vuex": "3.1.0"
   },
   "devDependencies": {

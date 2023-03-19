@@ -2,9 +2,9 @@
   <div class="app-container">
     <el-card>
       <el-alert
-        title="博客"
+        title="通用框架"
         type="info"
-        description="博客后台管理"
+        description="后台管理"
         show-icon
         :closable="false"
       >
@@ -29,7 +29,7 @@
 export default {
   name: 'dashboard',
   mounted() {
-    this.init()
+    
   },
 }
 </script>
