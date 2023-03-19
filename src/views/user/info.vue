@@ -6,7 +6,7 @@
           <el-form-item label="头像">
             <el-upload
               class="avatar-uploader"
-              action="http://localhost:5047/File/UploadAvatar"
+              :action="uploadAction"
               :show-file-list="false"
               :before-upload="beforeAvatarUpload"
               :on-success="handleAvatarSuccess"
@@ -106,6 +106,9 @@ export default {
     avatar: function () {
       // `this` 指向 vm 实例
       return process.env.VUE_APP_BASE_API + this.userInfo.avatar
+    },
+    uploadAction:function(){
+      return process.env.VUE_APP_BASE_API + 'File/UploadAvatar'
     }
   },
   data() {
