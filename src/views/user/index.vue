@@ -37,7 +37,20 @@
           }}</span>
         </template>
       </el-table-column>
+      <el-table-column prop="avatar" label="头像">
+        <template slot-scope="scope">
+          <img class="cellImg" :src="getImgUrl(scope.row.avatar)"
+        /></template>
+      </el-table-column>
       <el-table-column prop="userName" label="用户名"></el-table-column>
+      <el-table-column prop="userName" label="角色">
+        <template slot-scope="scope">
+          <div v-for="(userRole, index) in scope.row.userRoles" :key="index">
+            <el-tag>{{ userRole.role.name }}</el-tag>
+          </div>
+        </template>
+      </el-table-column>
+      
       <el-table-column prop="registerTime" label="注册时间"></el-table-column>
       <el-table-column prop="loginTime" label="登录时间"></el-table-column>
       <el-table-column prop="status" label="账号状态">
@@ -108,37 +121,26 @@
           >提 交</el-button
         >
       </span>
-
-      <el-descriptions
-        class="margin-top"
-        border
-        :column="2"
-        v-show="dialogParams.type === 3"
-      >
-        <el-descriptions-item label="id">{{
-          formData.id
-        }}</el-descriptions-item>
+      <el-descriptions class="margin-top" :column="1" border>
+        <el-descriptions-item label="头像">
+          <img v-if="formData.avatar" :src="avatar" class="avatar" />
+        </el-descriptions-item>
         <el-descriptions-item label="用户名">{{
           formData.userName
-        }}</el-descriptions-item>
-        <el-descriptions-item label="密码">{{
-          formData.password
         }}</el-descriptions-item>
         <el-descriptions-item label="注册时间">{{
           formData.registerTime
         }}</el-descriptions-item>
-        <el-descriptions-item label="登录时间">{{
+        <el-descriptions-item label="上次登录时间">{{
           formData.loginTime
         }}</el-descriptions-item>
-        <el-descriptions-item label="状态">{{
-          formData.status
-        }}</el-descriptions-item>
-        <el-descriptions-item label="添加时间">{{
-          formData.addTime
-        }}</el-descriptions-item>
-        <el-descriptions-item label="修改时间">{{
-          formData.upTime
-        }}</el-descriptions-item>
+        <el-descriptions-item
+          label="角色"
+          v-for="(userRole, index) in formData.userRoles"
+          :key="index"
+        >
+          <el-tag>{{ userRole.role.name }}</el-tag>
+        </el-descriptions-item>
       </el-descriptions>
       <span
         slot="footer"
@@ -167,215 +169,252 @@
 </template>
 
 <script>
-import * as api from '@/api/user'
-import { list as roleList } from '@/api/role'
+import * as api from "@/api/user";
+import { list as roleList } from "@/api/role";
 export default {
-  name: 'user',
+  name: "user",
   mounted() {
-    this.list()
+    this.list();
+  },
+  computed: {
+    // 计算属性的 getter
+    avatar: function () {
+      // `this` 指向 vm 实例
+      return process.env.VUE_APP_BASE_API + this.formData.avatar;
+    },
   },
   data() {
     return {
       tableData: [],
       tableLoading: false,
       dialogParams: {
-        title: '',
+        title: "",
         visible: false,
-        width: '50%',
-        type: 1//1为新增，2为修改，3为详情
+        width: "50%",
+        type: 1, //1为新增，2为修改，3为详情
       },
       formData: {
-        userName: '',
-        password: '',
-        registerTime: '',
-        loginTime: '',
-        status: '',
+        userName: "",
+        password: "",
+        registerTime: "",
+        loginTime: "",
+        status: "",
       },
       pagination: {
         size: 10,
         page: 1,
-        total: 0
+        total: 0,
       },
       rules: {
-        userName: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
-        password: [{ required: true, message: '密码不能为空', trigger: 'blur' }],
-        registerTime: [{ required: true, message: '注册时间不能为空', trigger: 'blur' }],
-        loginTime: [{ required: true, message: '登录时间不能为空', trigger: 'blur' }],
-        status: [{ required: true, message: '账号状态（0：正常,1：锁定，2：注销）不能为空', trigger: 'blur' }],
+        userName: [
+          { required: true, message: "用户名不能为空", trigger: "blur" },
+        ],
+        password: [
+          { required: true, message: "密码不能为空", trigger: "blur" },
+        ],
+        registerTime: [
+          { required: true, message: "注册时间不能为空", trigger: "blur" },
+        ],
+        loginTime: [
+          { required: true, message: "登录时间不能为空", trigger: "blur" },
+        ],
+        status: [
+          {
+            required: true,
+            message: "账号状态（0：正常,1：锁定，2：注销）不能为空",
+            trigger: "blur",
+          },
+        ],
       },
       currentRow: null,
       roles: [],
-      selectRoles: []
-    }
+      selectRoles: [],
+    };
   },
   methods: {
+    getImgUrl(img) {
+      return process.env.VUE_APP_BASE_API + img;
+    },
     formClose() {
       this.dialogParams.visible = false;
-      this.$refs.editForm.resetFields()
-      this.formData = this.$options.data().formData
-      this.selectRoles = []
+      this.$refs.editForm.resetFields();
+      this.formData = this.$options.data().formData;
+      this.selectRoles = [];
     },
     add() {
-      this.dialogParams.visible = true
-      this.dialogParams.title = '新增'
-      this.dialogParams.type = 1
+      this.dialogParams.visible = true;
+      this.dialogParams.title = "新增";
+      this.dialogParams.type = 1;
     },
     edit() {
       if (this.currentRow == null) {
-        this.$message.warning('请选择一条数据')
-        return
+        this.$message.warning("请选择一条数据");
+        return;
       }
-      this.dialogParams.visible = true
-      this.dialogParams.title = '编辑'
-      this.dialogParams.type = 2
-      let { id } = this.currentRow
+      this.dialogParams.visible = true;
+      this.dialogParams.title = "编辑";
+      this.dialogParams.type = 2;
+      let { id } = this.currentRow;
       api.get(id).then((res) => {
         if (res.code === 1) {
-          this.formData = res.data
-          this.getDbProvider()
+          this.formData = res.data;
+          this.getDbProvider();
         }
-      })
+      });
     },
     details() {
       if (this.currentRow == null) {
-        this.$message.warning('请选择一条数据')
-        return
+        this.$message.warning("请选择一条数据");
+        return;
       }
-      this.dialogParams.visible = true
-      this.dialogParams.title = '详情'
-      this.dialogParams.type = 3
-      let { id } = this.currentRow
+      this.dialogParams.visible = true;
+      this.dialogParams.title = "详情";
+      this.dialogParams.type = 3;
+      let { id } = this.currentRow;
       api.get(id).then((res) => {
         if (res.code === 1) {
-          this.formData = res.data
-
+          this.formData = res.data;
         }
-      })
+      });
     },
     del() {
       if (this.currentRow == null) {
-        this.$message.warning('请选择数据')
-        return
+        this.$message.warning("请选择数据");
+        return;
       }
-      this.$confirm('此操作将永久删除数据, 是否继续?', '提示', {
-        type: 'warning'
+      this.$confirm("此操作将永久删除数据, 是否继续?", "提示", {
+        type: "warning",
       }).then(() => {
-        let { id } = this.currentRow
+        let { id } = this.currentRow;
         api.del(id).then((res) => {
           if (res.code === 1) {
-            this.$message.success('删除成功')
-            this.list()
+            this.$message.success("删除成功");
+            this.list();
           }
-        })
+        });
       });
     },
     list() {
-      this.tableLoading = true
-      api.listPager(this.pagination).then((res) => {
-        if (res.code === 1) {
-          this.pagination.total = res.data.total
-          this.tableData = res.data.data
-        }
-        this.tableLoading = false
-      }).catch(() => {
-        this.tableLoading = false
-      })
+      this.tableLoading = true;
+      api
+        .listPager(this.pagination)
+        .then((res) => {
+          if (res.code === 1) {
+            this.pagination.total = res.data.total;
+            this.tableData = res.data.data;
+          }
+          this.tableLoading = false;
+        })
+        .catch(() => {
+          this.tableLoading = false;
+        });
     },
     addSubmit() {
-      this.$refs.editForm.validate(valid => {
+      this.$refs.editForm.validate((valid) => {
         if (valid) {
-          this.formData.userId = this.$store.getters.userId
-          api.insert(this.formData).then(res => {
+          this.formData.userId = this.$store.getters.userId;
+          api.insert(this.formData).then((res) => {
             if (res.code === 1) {
-              this.$message.success('添加成功')
-              this.list()
-              this.formClose()
+              this.$message.success("添加成功");
+              this.list();
+              this.formClose();
             }
-          })
+          });
         }
-      })
+      });
     },
     editSubmit() {
-      this.$refs.editForm.validate(valid => {
+      this.$refs.editForm.validate((valid) => {
         if (valid) {
-          api.update(this.formData).then(res => {
+          api.update(this.formData).then((res) => {
             if (res.code === 1) {
-              this.$message.success('编辑成功')
-              this.list()
-              this.formClose()
+              this.$message.success("编辑成功");
+              this.list();
+              this.formClose();
             }
-          })
+          });
         }
-      })
+      });
     },
     handleSizeChange(val) {
-      this.pagination.size = val
-      this.list()
+      this.pagination.size = val;
+      this.list();
     },
     handleCurrentChange(val) {
-      this.pagination.page = val
-      this.list()
+      this.pagination.page = val;
+      this.list();
     },
     rowHandleCurrentChange(val) {
       this.currentRow = val;
     },
     bind() {
       if (this.currentRow == null) {
-        this.$message.warning('请选择一条数据')
-        return
+        this.$message.warning("请选择一条数据");
+        return;
       }
-      this.dialogParams.visible = true
-      this.dialogParams.title = '分配角色'
-      this.dialogParams.type = 4
-      this.getRole()
-      let { id } = this.currentRow
-      this.getUserRole(id)
+      this.dialogParams.visible = true;
+      this.dialogParams.title = "分配角色";
+      this.dialogParams.type = 4;
+      this.getRole();
+      let { id } = this.currentRow;
+      this.getUserRole(id);
     },
     getRole() {
-      roleList().then(res => {
+      roleList().then((res) => {
         const arr = [];
         if (res.code === 1) {
-          res.data.forEach(element => {
+          res.data.forEach((element) => {
             arr.push({
               key: element.id,
-              label: element.name
-            })
+              label: element.name,
+            });
           });
         }
         this.roles = arr;
-      })
+      });
     },
     getUserRole(userId) {
-      api.get(userId).then(res => {
-        const arr = []
+      api.get(userId).then((res) => {
+        const arr = [];
         if (res.code === 1) {
-          res.data.userRoles.forEach(element => {
-            arr.push(element.roleId)
+          console.log(res.data);
+          res.data.userRoles.forEach((element) => {
+            arr.push(element.roleId);
           });
         }
-        this.selectRoles = arr
-      })
+        this.selectRoles = arr;
+      });
     },
     bindSubmit() {
-      let { id } = this.currentRow
-      const arr = []
-      this.selectRoles.forEach(element => {
-        arr.push(element)
-      })
+      let { id } = this.currentRow;
+      const arr = [];
+      this.selectRoles.forEach((element) => {
+        arr.push(element);
+      });
       const userRoles = {
-        userId : id,
-        roleIds : arr
-      }
-      api.bindUserRole(userRoles).then(res => {
+        userId: id,
+        roleIds: arr,
+      };
+      api.bindUserRole(userRoles).then((res) => {
         if (res.code === 1) {
-          this.$message.success('分配成功')
-          this.formClose()
+          this.$message.success("分配成功");
+          this.formClose();
         }
-      })
-    }
-  }
-}
+      });
+    },
+  },
+};
 </script>
 
 <style>
+.avatar {
+  width: 10em;
+  height: 10em;
+  display: block;
+}
+.cellImg {
+  width: 3em;
+  height: 3em;
+  display: block;
+}
 </style>

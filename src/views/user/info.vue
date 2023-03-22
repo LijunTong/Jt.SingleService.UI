@@ -2,40 +2,37 @@
   <div class="app-container c-container">
     <el-tabs v-model="activeName" type="border-card">
       <el-tab-pane label="个人信息" name="info">
-        <el-form ref="userForm" label-width="100px">
-          <el-form-item label="头像">
+        <el-descriptions class="margin-top" :column="1" border>
+          <el-descriptions-item label="头像">
             <el-upload
               class="avatar-uploader"
               :action="uploadAction"
               :show-file-list="false"
               :before-upload="beforeAvatarUpload"
               :on-success="handleAvatarSuccess"
-              
             >
-            <!-- :http-request="onUpload" -->
-              <img
-                v-if="userInfo.avatar"
-                :src="avatar"
-                class="avatar"
-              />
+              <!-- :http-request="onUpload" -->
+              <img v-if="userInfo.avatar" :src="avatar" class="avatar" />
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
-          </el-form-item>
-          <el-form-item label="用户名">
-            <el-input :value="userInfo.userName"></el-input>
-          </el-form-item>
-          <el-form-item label="注册时间">
-            <el-input :value="userInfo.registerTime"></el-input>
-          </el-form-item>
-          <el-form-item label="上次登录时间">
-            <el-input :value="userInfo.loginTime"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="warning" @click="handUserSubmitClick"
-              >提交</el-button
-            >
-          </el-form-item>
-        </el-form>
+          </el-descriptions-item>
+          <el-descriptions-item label="用户名">{{
+            userInfo.userName
+          }}</el-descriptions-item>
+          <el-descriptions-item label="注册时间">{{
+            userInfo.registerTime
+          }}</el-descriptions-item>
+          <el-descriptions-item label="上次登录时间">{{
+            userInfo.loginTime
+          }}</el-descriptions-item>
+          <el-descriptions-item
+            label="角色"
+            v-for="(userRole, index) in userInfo.userRoles"
+            :key="index"
+          >
+            <el-tag>{{ userRole.role.name }}</el-tag>
+          </el-descriptions-item>
+        </el-descriptions>
       </el-tab-pane>
       <el-tab-pane label="密码修改" name="password">
         <el-form
@@ -105,11 +102,11 @@ export default {
     // 计算属性的 getter
     avatar: function () {
       // `this` 指向 vm 实例
-      return process.env.VUE_APP_BASE_API + this.userInfo.avatar
+      return process.env.VUE_APP_BASE_API + this.userInfo.avatar;
     },
     uploadAction: function () {
       // `this` 指向 vm 实例
-      return process.env.VUE_APP_BASE_API + 'File/UploadAvatar'
+      return process.env.VUE_APP_BASE_API + "File/UploadAvatar";
     },
   },
   data() {
@@ -150,12 +147,12 @@ export default {
       oldPwdType: "password",
       passwordType: "password",
       repasswordType: "password",
-      avatarAction: ""
+      avatarAction: "",
     };
   },
   methods: {
     getUserInfo(userId) {
-      userApi.getInfo(userId).then((res) => {
+      userApi.get(userId).then((res) => {
         this.userInfo = res.data;
       });
     },
@@ -222,16 +219,15 @@ export default {
       return isLt2M;
     },
     onUpload(file) {
-      console.log(file)
-      console.log(1111)
+      console.log(file);
+      console.log(1111);
       let formData = new FormData();
       formData.append("file", file.file);
-      userApi.UploadAvatar(formData)
-        .then((res) => {
-          if(res.code === 1){
-            this.$message.success("上传成功");
-          }
-        });
+      userApi.UploadAvatar(formData).then((res) => {
+        if (res.code === 1) {
+          this.$message.success("上传成功");
+        }
+      });
     },
     handleAvatarSuccess(res, file) {
       if (res.code === 1) {

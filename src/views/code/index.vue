@@ -162,7 +162,7 @@
             border
           >
             <el-table-column type="selection" width="55"> </el-table-column>
-            <el-table-column prop="codeTempName" label="模板名称">
+            <el-table-column prop="codeTemp.name" label="模板名称">
             </el-table-column>
             <el-table-column label="文件名称">
               <template slot-scope="scope">
