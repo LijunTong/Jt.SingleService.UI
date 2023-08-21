@@ -5,7 +5,7 @@
         <span>总访问量：{{ totalCnt }}</span>
       </div>
       <div class="stats-card">
-        <div class="chart-con" ref="chartWeekTotal"></div>
+        <div ref="chartWeekTotal" class="chart-con" />
       </div>
     </el-card>
     <el-row :gutter="12">
@@ -15,7 +15,7 @@
             <span>今日IP访问量</span>
           </div>
           <div class="stats-card">
-            <div class="chart-con" ref="chartIpToday"></div>
+            <div ref="chartIpToday" class="chart-con" />
           </div>
         </el-card>
       </el-col>
@@ -25,7 +25,7 @@
             <span>历史IP访问量</span>
           </div>
           <div class="stats-card">
-            <div class="chart-con" ref="chartIpTotal"></div>
+            <div ref="chartIpTotal" class="chart-con" />
           </div>
         </el-card>
       </el-col>
@@ -35,7 +35,7 @@
             <span>今日接口访问量</span>
           </div>
           <div class="stats-card">
-            <div class="chart-con" ref="chartActionToday"></div>
+            <div ref="chartActionToday" class="chart-con" />
           </div>
         </el-card>
       </el-col>
@@ -45,7 +45,7 @@
             <span>历史接口访问量</span>
           </div>
           <div class="stats-card">
-            <div class="chart-con" ref="chartActionTotal"></div>
+            <div ref="chartActionTotal" class="chart-con" />
           </div>
         </el-card>
       </el-col>
@@ -54,15 +54,12 @@
 </template>
 
 <script>
-import * as echarts from 'echarts';
+import * as echarts from 'echarts'
 
 import * as logApi from '@/api/sys_log'
 
 export default {
-  name: 'stats',
-  mounted() {
-    this.init()
-  },
+  name: 'Stats',
   data() {
     return {
       totalCnt: 0,
@@ -73,13 +70,16 @@ export default {
       actionTotal: []
     }
   },
+  mounted() {
+    this.init()
+  },
   methods: {
     init() {
-      this.chartWeekTotal = echarts.init(this.$refs.chartWeekTotal);
-      this.chartIpTotal = echarts.init(this.$refs.chartIpTotal);
-      this.chartIpToday = echarts.init(this.$refs.chartIpToday);
-      this.chartActionTotal = echarts.init(this.$refs.chartActionTotal);
-      this.chartActionToday = echarts.init(this.$refs.chartActionToday);
+      this.chartWeekTotal = echarts.init(this.$refs.chartWeekTotal)
+      this.chartIpTotal = echarts.init(this.$refs.chartIpTotal)
+      this.chartIpToday = echarts.init(this.$refs.chartIpToday)
+      this.chartActionTotal = echarts.init(this.$refs.chartActionTotal)
+      this.chartActionToday = echarts.init(this.$refs.chartActionToday)
       this.getTotal()
       this.getWeekTotal()
       this.getIpToday()
@@ -95,71 +95,71 @@ export default {
       })
     },
     getWeekTotal() {
-      this.chartWeekTotal.showLoading();
+      this.chartWeekTotal.showLoading()
       logApi.getWeekTotalStats().then(res => {
         if (res.code === 1) {
           this.weekTotal = res.data
           this.initChart(this.chartWeekTotal, '访问量', 'line', res.data)
         }
       }).finally(() => {
-        this.chartWeekTotal.hideLoading();
+        this.chartWeekTotal.hideLoading()
       })
     },
     getIpTotal() {
-      this.chartIpTotal.showLoading();
+      this.chartIpTotal.showLoading()
       logApi.getIpStats().then(res => {
         if (res.code === 1) {
           this.ipTotal = res.data
           this.initChart(this.chartIpTotal, '访问量', 'bar', res.data)
         }
       }).finally(() => {
-        this.chartIpTotal.hideLoading();
+        this.chartIpTotal.hideLoading()
       })
     },
     getIpToday() {
-      this.chartIpToday.showLoading();
+      this.chartIpToday.showLoading()
       logApi.getTodayIpStats().then(res => {
         if (res.code === 1) {
           this.ipToday = res.data
           this.initChart(this.chartIpToday, '访问量', 'bar', res.data)
         }
       }).finally(() => {
-        this.chartIpToday.hideLoading();
+        this.chartIpToday.hideLoading()
       })
     },
     getActionTotal() {
-      this.chartActionTotal.showLoading();
+      this.chartActionTotal.showLoading()
       logApi.getActionStats().then(res => {
         if (res.code === 1) {
           this.actionTotal = res.data
           this.initChart(this.chartActionTotal, '访问量', 'bar', res.data)
         }
       }).finally(() => {
-        this.chartActionTotal.hideLoading();
+        this.chartActionTotal.hideLoading()
       })
     },
     getActionToday() {
-      this.chartActionToday.showLoading();
+      this.chartActionToday.showLoading()
       logApi.getTodayActionStats().then(res => {
         if (res.code === 1) {
           this.actionToday = res.data
           this.initChart(this.chartActionToday, '访问量', 'bar', res.data)
         }
       }).finally(() => {
-        this.chartActionToday.hideLoading();
+        this.chartActionToday.hideLoading()
       })
     },
     initChart(chart, name, type, data) {
-      //配置数据
-      let option = {
-        grid: { top: "30px", left: "50px", right: "30px", bottom: "30px" },
+      // 配置数据
+      const option = {
+        grid: { top: '30px', left: '50px', right: '30px', bottom: '30px' },
         legend: {},
         tooltip: {
           trigger: 'axis',
           axisPointer: { // 坐标轴指示器，坐标轴触发有效
             type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
           },
-          formatter: function (params) {
+          formatter: function(params) {
             let dataStr = `<div><p style="font-weight:bold;margin:0 8px 15px;">${params[0].data.key}</p></div>`
             dataStr += `<div>
                           <div style="margin: 0 8px;">
@@ -183,31 +183,30 @@ export default {
         series: [{
           type: type, smooth: true, name: name
         }]
-      };
+      }
       // 4.传入数据
-      chart.setOption(option);
+      chart.setOption(option)
 
       window.onresize = () => {
         chart.resize()
-      };
-
+      }
     },
     handleClick(tab, event) {
       switch (tab.name) {
         case 'ipToday':
           this.initChart(this.chartIpToday, '访问量', 'bar', this.ipToday)
-          break;
+          break
         case 'ipHistory':
           this.initChart(this.chartIpTotal, '访问量', 'bar', this.ipTotal)
-          break;
+          break
         case 'aToday':
           this.initChart(this.chartActionToday, '访问量', 'bar', this.actionToday)
-          break;
+          break
         case 'aHistory':
           this.initChart(this.chartActionTotal, '访问量', 'bar', this.actionTotal)
-          break;
+          break
         default:
-          break;
+          break
       }
     }
   }

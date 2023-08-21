@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import AppFront  from '@/layout/FrontLayout/components/AppFront.vue'
+import AppFront from '@/layout/FrontLayout/components/AppFront.vue'
 import FrontNav from '@/layout/FrontLayout/components/FrontNav.vue'
 import ResizeMixin from '../mixin/ResizeHandler'
 
@@ -24,6 +24,11 @@ export default {
     FrontNav
   },
   mixins: [ResizeMixin],
+  data() {
+    return {
+      ifRouterAlive: true
+    }
+  },
   computed: {
     sidebar() {
       return this.$store.state.app.sidebar
@@ -48,13 +53,13 @@ export default {
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
     },
     reload() {
-      this.ifRouterAlive = false;
-      //console.log(this.ifRouterAlive);
+      this.ifRouterAlive = false
+      // console.log(this.ifRouterAlive);
       this.$nextTick(() => {
-        this.ifRouterAlive = true;
-      });
+        this.ifRouterAlive = true
+      })
     },
-    getIfRouterAlive(){
+    getIfRouterAlive() {
       return this.ifRouterAlive
     }
   },
@@ -62,11 +67,6 @@ export default {
     return {
       reload: this.reload,
       getIfRouterAlive: this.getIfRouterAlive
-    }
-  },
-  data() {
-    return {
-      ifRouterAlive: true,
     }
   }
 }

@@ -1,27 +1,31 @@
 <template>
   <div class="navbar">
-    
-      <top-nav />
-    
+    <top-nav />
     <div class="right-menu">
       <search id="header-search" class="right-menu-item" />
       <RefreshBtn id="RefreshBtn" class="right-menu-item hover-effect" />
       <screenfull id="screenfull" class="right-menu-item hover-effect" />
 
-      <el-dropdown class="avatar-container" trigger="click" v-if="islogin()">
+      <el-dropdown v-if="islogin()" class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatarUrl" class="user-avatar" />
+          <img :src="avatarUrl" class="user-avatar">
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
-            <el-dropdown-item> <i class="iconfont icon-home"></i> 后台 </el-dropdown-item>
+            <el-dropdown-item>
+              <i class="iconfont icon-home" /> 后台
+            </el-dropdown-item>
           </router-link>
           <router-link to="/user/info">
-            <el-dropdown-item> <i class="iconfont icon-user"></i> 个人中心 </el-dropdown-item>
+            <el-dropdown-item>
+              <i class="iconfont icon-user" /> 个人中心
+            </el-dropdown-item>
           </router-link>
           <el-dropdown-item divided @click.native="handlerLogout">
-            <span style="display: block"><i class="iconfont icon-logout"></i> 溜了</span>
+            <span
+              style="display: block"
+            ><i class="iconfont icon-logout" /> 溜了</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -33,45 +37,56 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import Hamburger from "@/components/Hamburger";
-import Screenfull from "@/components/Screenfull";
-import Search from "@/components/HeaderSearch";
-import { logout, getInfo } from '@/api/user';
-import RefreshBtn from "@/components/RefreshBtn"
-import TopNav from "@/layout/FrontLayout/components/TopNav"
+import { mapGetters } from 'vuex'
+import Screenfull from '@/components/Screenfull'
+import Search from '@/components/HeaderSearch'
+import { logout, getInfo } from '@/api/user'
+import RefreshBtn from '@/components/RefreshBtn'
+import TopNav from '@/layout/FrontLayout/components/TopNav'
 export default {
   components: {
-    Hamburger,
     Screenfull,
     Search,
     RefreshBtn,
     TopNav
   },
-  computed: {
-    ...mapGetters(["sidebar", "avatar"]),
-    avatarUrl(){
-      return require('@/assets/avatar/avatar.jpg')
+  data() {
+    return {
+      avatar: ''
     }
+  },
+  computed: {
+    ...mapGetters(['sidebar']),
+    avatarUrl() {
+      return this.avatar
+    }
+  },
+  mounted() {
+    const id = this.$store.getters.userId
+    getInfo(id).then(res => {
+      if (res.code === 1) {
+        this.avatar = process.env.VUE_APP_BASE_API + res.data.avatar
+      }
+    })
   },
   methods: {
     toggleSideBar() {
-      this.$store.dispatch("app/toggleSideBar");
+      this.$store.dispatch('app/toggleSideBar')
     },
     handlerLogout() {
       logout().then(() => {
-        this.$store.dispatch('user/logout');
+        this.$store.dispatch('user/logout')
         this.$router.replace('/login')
-      }).catch(()=>{
-        this.$store.dispatch('user/logout');
-        this.$router.replace('/login');
-      });
+      }).catch(() => {
+        this.$store.dispatch('user/logout')
+        this.$router.replace('/login')
+      })
     },
     islogin() {
-        return this.$store.state.user.token
+      return this.$store.state.user.token
     }
-  },
-};
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -81,7 +96,7 @@ export default {
   position: relative;
   background: #fff;
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
-
+  margin-bottom: 10px;
   .hamburger-container {
     line-height: 46px;
     height: 100%;
@@ -98,7 +113,7 @@ export default {
   .breadcrumb-container {
     float: left;
   }
-  
+
   .right-menu {
     float: right;
     height: 100%;

@@ -1,11 +1,11 @@
 <template>
   <div>
-    <i class="iconfont icon-reload" @click="click"></i>
+    <i class="iconfont icon-reload" @click="click" />
   </div>
 </template>
 
 <script>
-import {getMenuTree} from "@/api/menu"
+import { getMenuTree } from '@/api/menu'
 export default {
   name: 'RefreshBtn',
   data() {
@@ -24,7 +24,6 @@ export default {
           this.$router.go(0)
         }
       })
-      
     }
   }
 }

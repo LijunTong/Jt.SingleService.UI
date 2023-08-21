@@ -2,31 +2,39 @@
   <div class="app-container">
     <div class="table-tool">
       <el-tooltip content="详情" placement="bottom" effect="light">
-        <el-button type="info" size="mini" @click="details"
-          ><i class="iconfont icon-eye"></i
-        ></el-button>
+        <el-button
+          type="info"
+          size="mini"
+          @click="details"
+        ><i class="iconfont icon-eye" /></el-button>
       </el-tooltip>
       <el-tooltip content="添加" placement="bottom" effect="light">
-        <el-button type="primary" size="mini" @click="add"
-          ><i class="iconfont icon-plus"></i
-        ></el-button>
+        <el-button
+          type="primary"
+          size="mini"
+          @click="add"
+        ><i class="iconfont icon-plus" /></el-button>
       </el-tooltip>
       <el-tooltip content="编辑" placement="bottom" effect="light">
-        <el-button type="primary" size="mini" @click="edit"
-          ><i class="iconfont icon-edit"></i
-        ></el-button>
+        <el-button
+          type="primary"
+          size="mini"
+          @click="edit"
+        ><i class="iconfont icon-edit" /></el-button>
       </el-tooltip>
       <el-tooltip content="删除" placement="bottom" effect="light">
-        <el-button type="warning" size="mini" @click="del"
-          ><i class="iconfont icon-delete"></i
-        ></el-button>
+        <el-button
+          type="warning"
+          size="mini"
+          @click="del"
+        ><i class="iconfont icon-delete" /></el-button>
       </el-tooltip>
     </div>
     <el-table
-      :data="tableData"
       ref="table"
-      border
       v-loading="tableLoading"
+      :data="tableData"
+      border
       height="530px"
       highlight-current-row
       @current-change="rowHandleCurrentChange"
@@ -38,20 +46,19 @@
           }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="name" label="模板名称"></el-table-column>
+      <el-table-column prop="name" label="模板名称" />
     </el-table>
     <div class="table-pager">
       <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
         :current-page="pagination.page"
         :page-sizes="[10, 20, 50, 100, 500]"
         :page-size="pagination.size"
         layout="total, sizes, prev, pager, next, jumper"
         :total="pagination.total"
         background
-      >
-      </el-pagination>
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
     </div>
 
     <el-dialog
@@ -63,24 +70,25 @@
       :show-close="false"
     >
       <el-form
+        v-show="dialogParams.type === 1 || dialogParams.type === 2"
+        ref="editForm"
         :model="formData"
         :rules="rules"
-        ref="editForm"
         label-width="100px"
-        v-show="dialogParams.type === 1 || dialogParams.type === 2"
       >
-        <el-form-item label="模板名称" prop="name"
-          ><el-input v-model="formData.name"></el-input
-        ></el-form-item>
+        <el-form-item
+          label="模板名称"
+          prop="name"
+        ><el-input v-model="formData.name" /></el-form-item>
         <el-form-item>
           <el-collapse>
             <el-collapse-item title="模板占位符">
               <div v-for="(item, index) in placeholder" :key="index">
                 <el-link
-                  type="info"
                   v-clipboard:copy="item.name"
                   v-clipboard:success="copySuccess"
-                  >{{ item.name }}<i class="iconfont icon-file-copy"></i>
+                  type="info"
+                >{{ item.name }}<i class="iconfont icon-file-copy" />
                 </el-link>
                 <label class="font-red">{{ item.des }}</label>
               </div>
@@ -89,49 +97,48 @@
         </el-form-item>
         <el-form-item label="正文" prop="tempContent">
           <el-input
+            ref="content"
+            v-model="formData.tempContent"
             type="textarea"
             :autosize="{ minRows: 20, maxRows: 20 }"
-            v-model="formData.tempContent"
-            ref="content"
-          ></el-input>
+          />
         </el-form-item>
       </el-form>
       <span
+        v-show="dialogParams.type === 1 || dialogParams.type === 2"
         slot="footer"
         class="dialog-footer"
-        v-show="dialogParams.type === 1 || dialogParams.type === 2"
       >
         <el-button @click="formClose">返 回</el-button>
         <el-button
           type="primary"
           @click="dialogParams.type === 1 ? addSubmit() : editSubmit()"
-          >提 交</el-button
-        >
+        >提 交</el-button>
       </span>
 
       <el-descriptions
+        v-show="dialogParams.type === 3"
         class="margin-top"
         border
         :column="1"
-        v-show="dialogParams.type === 3"
       >
         <el-descriptions-item label="模板名称">{{
           formData.name
         }}</el-descriptions-item>
         <el-descriptions-item label="模板内容">
           <el-input
+            v-model="formData.tempContent"
             type="textarea"
             :autosize="{ minRows: 20, maxRows: 20 }"
-            v-model="formData.tempContent"
-          ></el-input>
+          />
         </el-descriptions-item>
       </el-descriptions>
       <span
+        v-show="dialogParams.type === 3"
         slot="footer"
         class="dialog-footer"
-        v-show="dialogParams.type === 3"
       >
-        <el-button @click="formClose" type="info">确 认</el-button>
+        <el-button type="info" @click="formClose">确 认</el-button>
       </span>
     </el-dialog>
   </div>
@@ -140,10 +147,7 @@
 <script>
 import * as api from '@/api/code_temp'
 export default {
-  name: 'code_temp',
-  mounted() {
-    this.list()
-  },
+  name: 'CodeTemp',
   data() {
     return {
       tableData: [],
@@ -152,7 +156,7 @@ export default {
         title: '',
         visible: false,
         width: '50%',
-        type: 1//1为新增，2为修改，3为详情
+        type: 1// 1为新增，2为修改，3为详情
       },
       formData: {
         name: '',
@@ -167,7 +171,7 @@ export default {
       currentRow: null,
       rules: {
         name: [{ required: true, message: '模板名称不能为空', trigger: 'blur' }],
-        tempContent: [{ required: true, message: '模板内容不能为空', trigger: 'blur' }],
+        tempContent: [{ required: true, message: '模板内容不能为空', trigger: 'blur' }]
       },
       placeholder: [
         { name: '@(Model.TableName)', des: '字符串类型，数据库表名称' },
@@ -183,13 +187,16 @@ export default {
         { name: '@(Model.DbFieldInfos[i].IsIncrement)', des: '数值类型，数据库数值类型是否自增，1：自增，0：不自增' },
         { name: '@(Model.DbFieldInfos[i].IsPrimaryKey)', des: '数值类型，数据库数值类型是否主键，1：主键，0：非主键' },
         { name: '@(Model.DbFieldInfos[i].FieldDes)', des: '字符串类型，数据库字段描述' },
-        { name: '@(Model.DbFieldInfos[i].DefaultValue)', des: '字符串类型，数据库字段默认值' },
+        { name: '@(Model.DbFieldInfos[i].DefaultValue)', des: '字符串类型，数据库字段默认值' }
       ]
     }
   },
+  mounted() {
+    this.list()
+  },
   methods: {
     formClose() {
-      this.dialogParams.visible = false;
+      this.dialogParams.visible = false
       this.$refs.editForm.clearValidate()
       this.formData = this.$options.data().formData
     },
@@ -197,7 +204,6 @@ export default {
       this.dialogParams.visible = true
       this.dialogParams.title = '新增'
       this.dialogParams.type = 1
-
     },
     edit() {
       if (this.currentRow == null) {
@@ -207,7 +213,7 @@ export default {
       this.dialogParams.visible = true
       this.dialogParams.title = '编辑'
       this.dialogParams.type = 2
-      let { id } = this.currentRow
+      const { id } = this.currentRow
 
       api.get(id).then((res) => {
         if (res.code === 1) {
@@ -223,7 +229,7 @@ export default {
       this.dialogParams.visible = true
       this.dialogParams.title = '详情'
       this.dialogParams.type = 3
-      let { id } = this.currentRow
+      const { id } = this.currentRow
       api.get(id).then((res) => {
         if (res.code === 1) {
           this.formData = res.data
@@ -238,7 +244,7 @@ export default {
       this.$confirm('此操作将永久删除数据, 是否继续?', '提示', {
         type: 'warning'
       }).then(() => {
-        let { id } = this.currentRow
+        const { id } = this.currentRow
         api.del(id).then((res) => {
           if (res.code === 1) {
             this.$message.success('删除成功')
@@ -297,7 +303,7 @@ export default {
       this.list()
     },
     rowHandleCurrentChange(val) {
-      this.currentRow = val;
+      this.currentRow = val
     },
     copySuccess() {
       this.$message.info('复制成功')

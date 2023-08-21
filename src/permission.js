@@ -4,15 +4,16 @@ import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import * as tokenHelper from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
-import { getMenus,setMenus } from '@/utils/auth'
+import { getMenus, setMenus } from '@/utils/auth'
 import * as menuApi from '@/api/menu'
+import { initRoutes2, resetRouter } from '@/router'
 
 NProgress.configure({ showSpinner: true }) // NProgress Configuration
 
 const whiteList = ['/login', '/register', '/front'] // no redirect whitelist
-let isReload = true
+const isReload = true
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async(to, from, next) => {
   // start progress bar
   NProgress.start()
 
@@ -21,19 +22,32 @@ router.beforeEach(async (to, from, next) => {
 
   // determine whether the user has logged in
   const hasToken = tokenHelper.getToken(tokenHelper.AccessTokenKey)
-  //测试环境，不需要权限
+  // 测试环境，不需要权限
   // next()
   // return
   if (to.path === '/register') {
-    //注册页 无需登录
+    // 注册页 无需登录
     next()
-  }
-  else if (hasToken) {
+  } else if (hasToken) {
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
       next({ path: '/' })
       NProgress.done()
     } else {
+      // console.log(router)
+      // var r = await menuApi.getMenuTree()
+      // const routes = []
+      // if (r.code === 1) {
+      //   resetRouter()
+      //   r.data.forEach(element => {
+      //     routes.push(initRoutes2(element))
+      //   })
+      //   console.log(routes)
+      //   router.addRoutes(routes)
+      //   console.log(router)
+      // }
+      // console.log(r)
+      // console.log(2)
       next()
     }
   } else {
@@ -55,6 +69,3 @@ router.afterEach(() => {
   // finish progress bar
   NProgress.done()
 })
-
-
-

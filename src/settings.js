@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: '系统',
+  title: 'cms',
   tagsView: true,
   /**
    * @type {boolean} true | false
