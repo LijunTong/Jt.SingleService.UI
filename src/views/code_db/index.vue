@@ -2,31 +2,39 @@
   <div class="app-container">
     <div class="table-tool">
       <el-tooltip content="详情" placement="bottom" effect="light">
-        <el-button type="info" size="mini" @click="details"
-          ><i class="iconfont icon-eye"></i
-        ></el-button>
+        <el-button
+          type="info"
+          size="mini"
+          @click="details"
+        ><i class="iconfont icon-eye" /></el-button>
       </el-tooltip>
       <el-tooltip content="添加" placement="bottom" effect="light">
-        <el-button type="primary" size="mini" @click="add"
-          ><i class="iconfont icon-plus"></i
-        ></el-button>
+        <el-button
+          type="primary"
+          size="mini"
+          @click="add"
+        ><i class="iconfont icon-plus" /></el-button>
       </el-tooltip>
       <el-tooltip content="编辑" placement="bottom" effect="light">
-        <el-button type="primary" size="mini" @click="edit"
-          ><i class="iconfont icon-edit"></i
-        ></el-button>
+        <el-button
+          type="primary"
+          size="mini"
+          @click="edit"
+        ><i class="iconfont icon-edit" /></el-button>
       </el-tooltip>
       <el-tooltip content="删除" placement="bottom" effect="light">
-        <el-button type="warning" size="mini" @click="del"
-          ><i class="iconfont icon-delete"></i
-        ></el-button>
+        <el-button
+          type="warning"
+          size="mini"
+          @click="del"
+        ><i class="iconfont icon-delete" /></el-button>
       </el-tooltip>
     </div>
     <el-table
-      :data="tableData"
       ref="table"
-      border
       v-loading="tableLoading"
+      :data="tableData"
+      border
       height="530px"
       highlight-current-row
       @current-change="rowHandleCurrentChange"
@@ -38,22 +46,21 @@
           }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="name" label="名称"></el-table-column>
-      <el-table-column prop="type" label="类型"></el-table-column>
-      <el-table-column prop="conStr" label="连接字符串"></el-table-column>
+      <el-table-column prop="name" label="名称" />
+      <el-table-column prop="type" label="类型" />
+      <el-table-column prop="conStr" label="连接字符串" />
     </el-table>
     <div class="table-pager">
       <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
         :current-page="pagination.page"
         :page-sizes="[10, 20, 50, 100, 500]"
         :page-size="pagination.size"
         layout="total, sizes, prev, pager, next, jumper"
         :total="pagination.total"
         background
-      >
-      </el-pagination>
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
     </div>
 
     <el-dialog
@@ -65,11 +72,11 @@
       :show-close="false"
     >
       <el-form
+        v-show="dialogParams.type === 1 || dialogParams.type === 2"
+        ref="editForm"
         :model="formData"
         :rules="rules"
-        ref="editForm"
         label-width="100px"
-        v-show="dialogParams.type === 1 || dialogParams.type === 2"
       >
         <el-form-item label="类型" prop="type">
           <el-select v-model="formData.type" placeholder="请选择">
@@ -78,36 +85,36 @@
               :key="item"
               :label="item"
               :value="item"
-            >
-            </el-option>
+            />
           </el-select>
         </el-form-item>
 
-        <el-form-item label="名称" prop="name"
-          ><el-input v-model="formData.name"></el-input
-        ></el-form-item>
-        <el-form-item label="连接字符串" prop="conStr"
-          ><el-input v-model="formData.conStr"></el-input
-        ></el-form-item>
+        <el-form-item
+          label="名称"
+          prop="name"
+        ><el-input v-model="formData.name" /></el-form-item>
+        <el-form-item
+          label="连接字符串"
+          prop="conStr"
+        ><el-input v-model="formData.conStr" /></el-form-item>
       </el-form>
       <span
+        v-show="dialogParams.type === 1 || dialogParams.type === 2"
         slot="footer"
         class="dialog-footer"
-        v-show="dialogParams.type === 1 || dialogParams.type === 2"
       >
         <el-button @click="formClose">返 回</el-button>
         <el-button
           type="primary"
           @click="dialogParams.type === 1 ? addSubmit() : editSubmit()"
-          >提 交</el-button
-        >
+        >提 交</el-button>
       </span>
 
       <el-descriptions
+        v-show="dialogParams.type === 3"
         class="margin-top"
         border
         :column="2"
-        v-show="dialogParams.type === 3"
       >
         <el-descriptions-item label="名称">{{
           formData.name
@@ -120,11 +127,11 @@
         }}</el-descriptions-item>
       </el-descriptions>
       <span
+        v-show="dialogParams.type === 3"
         slot="footer"
         class="dialog-footer"
-        v-show="dialogParams.type === 3"
       >
-        <el-button @click="formClose" type="info">确 认</el-button>
+        <el-button type="info" @click="formClose">确 认</el-button>
       </span>
     </el-dialog>
   </div>
@@ -134,10 +141,7 @@
 import * as api from '@/api/code_db'
 import { getDbProvider } from '@/api/code'
 export default {
-  name: 'db',
-  mounted() {
-    this.list()
-  },
+  name: 'Db',
   data() {
     return {
       tableData: [],
@@ -146,12 +150,12 @@ export default {
         title: '',
         visible: false,
         width: '50%',
-        type: 1//1为新增，2为修改，3为详情
+        type: 1// 1为新增，2为修改，3为详情
       },
       formData: {
         conStr: '',
         name: '',
-        type: '',
+        type: ''
 
       },
       pagination: {
@@ -163,7 +167,7 @@ export default {
       rules: {
         conStr: [{ required: true, message: '连接字符串不能为空', trigger: 'blur' }],
         name: [{ required: true, message: '名称不能为空', trigger: 'blur' }],
-        type: [{ required: true, message: '类型不能为空', trigger: 'blur' }],
+        type: [{ required: true, message: '类型不能为空', trigger: 'blur' }]
 
       },
       currentRow: null,
@@ -171,9 +175,12 @@ export default {
 
     }
   },
+  mounted() {
+    this.list()
+  },
   methods: {
     formClose() {
-      this.dialogParams.visible = false;
+      this.dialogParams.visible = false
       this.$refs.editForm.resetFields()
       this.formData = this.$options.data().formData
     },
@@ -191,7 +198,7 @@ export default {
       this.dialogParams.visible = true
       this.dialogParams.title = '编辑'
       this.dialogParams.type = 2
-      let { id } = this.currentRow
+      const { id } = this.currentRow
       api.get(id).then((res) => {
         if (res.code === 1) {
           this.formData = res.data
@@ -207,11 +214,10 @@ export default {
       this.dialogParams.visible = true
       this.dialogParams.title = '详情'
       this.dialogParams.type = 3
-      let { id } = this.currentRow
+      const { id } = this.currentRow
       api.get(id).then((res) => {
         if (res.code === 1) {
           this.formData = res.data
-
         }
       })
     },
@@ -223,14 +229,14 @@ export default {
       this.$confirm('此操作将永久删除数据, 是否继续?', '提示', {
         type: 'warning'
       }).then(() => {
-        let { id } = this.currentRow
+        const { id } = this.currentRow
         api.del(id).then((res) => {
           if (res.code === 1) {
             this.$message.success('删除成功')
             this.list()
           }
         })
-      });
+      })
     },
     list() {
       this.tableLoading = true
@@ -282,7 +288,7 @@ export default {
       this.list()
     },
     rowHandleCurrentChange(val) {
-      this.currentRow = val;
+      this.currentRow = val
     },
     getDbProvider() {
       getDbProvider().then(res => {

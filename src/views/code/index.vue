@@ -15,17 +15,15 @@
               :label="item.name"
               :value="item.id"
               clearable
-            >
-            </el-option>
+            />
           </el-select>
         </el-form-item>
         <el-form-item class="form-last-item">
           <el-button
             type="primary"
-            @click="handClickConnect"
             :loading="connectLoading"
-            >连接</el-button
-          >
+            @click="handClickConnect"
+          >连接</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -44,16 +42,15 @@
               <el-select
                 v-model="codeDbForm.databaseSelVal"
                 placeholder="请选择"
-                @change="handChangeDataBase"
                 clearable
+                @change="handChangeDataBase"
               >
                 <el-option
                   v-for="item in databases"
                   :key="item.dataBase"
                   :label="item.dataBase"
                   :value="item.dataBase"
-                >
-                </el-option>
+                />
               </el-select>
             </el-form-item>
           </el-col>
@@ -62,22 +59,21 @@
               <el-select
                 v-model="codeDbForm.tableName"
                 placeholder="请选择"
-                @change="handChangeTable"
                 clearable
+                @change="handChangeTable"
               >
                 <el-option
                   v-for="item in tables"
                   :key="item.tableName"
                   :label="item.tableName"
                   :value="item.tableName"
-                >
-                </el-option>
+                />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="实体名" prop="className">
-              <el-input v-model="codeDbForm.className"></el-input>
+              <el-input v-model="codeDbForm.className" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -85,52 +81,49 @@
         <el-form-item label="表结构">
           <el-table
             ref="fieldsTable"
+            v-loading="fieldTableLoading"
             :data="fields"
             tooltip-effect="dark"
             style="width: 100%"
             height="400px"
-            v-loading="fieldTableLoading"
             border
           >
-            <el-table-column type="selection" width="55"> </el-table-column>
-            <el-table-column prop="fieldName" label="数据库字段名">
-            </el-table-column>
+            <el-table-column type="selection" width="55" />
+            <el-table-column prop="fieldName" label="数据库字段名" />
             <el-table-column label="实体属性名">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.fieldModelName"></el-input>
+                <el-input v-model="scope.row.fieldModelName" />
               </template>
             </el-table-column>
-            <el-table-column prop="fieldDbType" label="数据库字段类型">
-            </el-table-column>
+            <el-table-column prop="fieldDbType" label="数据库字段类型" />
             <el-table-column label="实体属性类型">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.fieldModelType"></el-input>
+                <el-input v-model="scope.row.fieldModelType" />
               </template>
             </el-table-column>
             <el-table-column label="字段长度">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.fieldLength"></el-input>
+                <el-input v-model="scope.row.fieldLength" />
               </template>
             </el-table-column>
             <el-table-column label="是否为空">
               <template slot-scope="scope">
                 <el-select v-model="scope.row.isNotNull">
-                  <el-option label="YES" value="YES"></el-option>
-                  <el-option label="NO" value="NO"></el-option>
+                  <el-option label="YES" value="YES" />
+                  <el-option label="NO" value="NO" />
                 </el-select>
               </template>
             </el-table-column>
-            <el-table-column prop="isIncrement" label="自增"> </el-table-column>
-            <el-table-column prop="isPrimaryKey" label="主键">
-            </el-table-column>
+            <el-table-column prop="isIncrement" label="自增" />
+            <el-table-column prop="isPrimaryKey" label="主键" />
             <el-table-column label="描述">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.fieldDes"></el-input>
+                <el-input v-model="scope.row.fieldDes" />
               </template>
             </el-table-column>
             <el-table-column label="默认值">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.defaultValue"></el-input>
+                <el-input v-model="scope.row.defaultValue" />
               </template>
             </el-table-column>
           </el-table>
@@ -139,42 +132,42 @@
           <el-select
             v-model="codeDbForm.codeSchemeId"
             placeholder="请选择"
-            @change="handChangeScheme"
             clearable
+            @change="handChangeScheme"
           >
             <el-option
               v-for="item in codeSchemes"
               :key="item.id"
               :label="item.name"
               :value="item.id"
-            >
-            </el-option>
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="模板明细">
           <el-table
             ref="tempTable"
+            v-loading="tempTableLoading"
             :data="temps"
             tooltip-effect="dark"
             style="width: 100%"
             height="400px"
-            v-loading="tempTableLoading"
             border
           >
-            <el-table-column type="selection" width="55"> </el-table-column>
-            <el-table-column prop="codeTemp.name" label="模板名称">
-            </el-table-column>
+            <el-table-column type="selection" width="55" />
+            <el-table-column prop="codeTemp.name" label="模板名称" />
             <el-table-column label="文件名称">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.fileName"></el-input>
+                <el-input v-model="scope.row.fileName" />
               </template>
             </el-table-column>
           </el-table>
         </el-form-item>
         <el-form-item class="form-last-item">
-          <el-button :loading="genLoading" type="warning" @click="handClickGen"
-            >生成</el-button
-          >
+          <el-button
+            :loading="genLoading"
+            type="warning"
+            @click="handClickGen"
+          >生成</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -185,9 +178,8 @@
 import * as dbApi from '@/api/code_db'
 import * as codeApi from '@/api/code'
 import * as schemeApi from '@/api/code_gen_scheme'
-import * as tempApi from '@/api/code_temp'
 export default {
-  name: 'code',
+  name: 'Code',
   data() {
     return {
       fieldTableLoading: false,
@@ -204,7 +196,7 @@ export default {
         databaseSelVal: [{ required: true, message: '不能为空', trigger: 'blur' }],
         tableName: [{ required: true, message: '不能为空', trigger: 'blur' }],
         className: [{ required: true, message: '不能为空', trigger: 'blur' }],
-        codeSchemeId: [{ required: true, message: '不能为空', trigger: 'blur' }],
+        codeSchemeId: [{ required: true, message: '不能为空', trigger: 'blur' }]
       },
       dataSource: [],
       dataSourceSelVal: '',
@@ -217,15 +209,14 @@ export default {
       connectLoading: false
     }
   },
-  mounted() {
-    this.getDb()
-    this.getSchemes()
-
-  },
   watch: {
     filterText(val) {
       this.$refs.tree2.filter(val)
     }
+  },
+  mounted() {
+    this.getDb()
+    this.getSchemes()
   },
 
   methods: {
@@ -248,14 +239,14 @@ export default {
       })
     },
     handClickConnect() {
-      if (this.dataSourceSelVal == '') {
+      if (this.dataSourceSelVal === '') {
         this.$message.warning('请先选择数据源')
         return
       }
       this.reSetData()
       this.reSetCodeScheme()
-      let db = this.dataSource.filter(x => x.id == this.dataSourceSelVal)[0];
-      let dbParam = { dbType: '', connectString: '' }
+      const db = this.dataSource.filter(x => x.id === this.dataSourceSelVal)[0]
+      const dbParam = { dbType: '', connectString: '' }
       dbParam.dbType = db.type
       dbParam.connectString = db.conStr
       this.connectLoading = true
@@ -267,20 +258,20 @@ export default {
               this.$message.info('连接成功')
             }
             this.connectLoading = false
-          }).catch(err => {
+          }).catch(() => {
             this.connectLoading = false
           })
         }
-      }).catch(err => {
+      }).catch(() => {
         this.connectLoading = false
       })
     },
     handChangeDataBase() {
-      if (this.codeDbForm.databaseSelVal == '') {
+      if (this.codeDbForm.databaseSelVal === '') {
         this.$message.warning('请先选择数据库')
         return
       }
-      let param = { dbName: this.codeDbForm.databaseSelVal }
+      const param = { dbName: this.codeDbForm.databaseSelVal }
       codeApi.getTableNames(param).then(res => {
         if (res.code === 1) {
           this.tables = res.data
@@ -288,43 +279,43 @@ export default {
       })
     },
     handChangeTable() {
-      if (this.codeDbForm.databaseSelVal == '') {
+      if (this.codeDbForm.databaseSelVal === '') {
         this.$message.warning('请先选择数据库')
         return
       }
-      if (this.codeDbForm.tableName == '') {
+      if (this.codeDbForm.tableName === '') {
         this.$message.warning('请先选择数据表')
         return
       }
       this.reSetCodeScheme()
-      let param = { dbName: this.codeDbForm.databaseSelVal, tableName: this.codeDbForm.tableName }
-      this.fieldTableLoading = true;
+      const param = { dbName: this.codeDbForm.databaseSelVal, tableName: this.codeDbForm.tableName }
+      this.fieldTableLoading = true
       codeApi.getDbFields(param).then(res => {
         if (res.code === 1) {
           this.fields = res.data.dbFields
           this.codeDbForm.className = res.data.className
-          this.$refs.fieldsTable.toggleAllSelection();
+          this.$refs.fieldsTable.toggleAllSelection()
         }
-        this.fieldTableLoading = false;
-      }).catch(err => {
-        this.fieldTableLoading = false;
+        this.fieldTableLoading = false
+      }).catch(() => {
+        this.fieldTableLoading = false
       })
     },
     handChangeScheme() {
-      let { codeSchemeId, className ,  tableName} = this.codeDbForm
-      if (className == '') {
+      const { codeSchemeId, className, tableName } = this.codeDbForm
+      if (className === '') {
         this.$message.warning('请填写实体名称')
         return
       }
-      this.tempTableLoading = true;
-      codeApi.getSchemeDetials(codeSchemeId, className ,tableName).then(res => {
+      this.tempTableLoading = true
+      codeApi.getSchemeDetials(codeSchemeId, className, tableName).then(res => {
         if (res.code === 1) {
-          this.temps = res.data
+          this.temps = res.data.codeSchemeDetials
           this.$refs.tempTable.toggleAllSelection()
         }
-        this.tempTableLoading = false;
-      }).catch(err => {
-        this.tempTableLoading = false;
+        this.tempTableLoading = false
+      }).catch(() => {
+        this.tempTableLoading = false
       })
     },
     handClickGen() {
@@ -332,18 +323,18 @@ export default {
         if (valid) {
           this.codeDbForm.dbFieldInfos = this.$refs.fieldsTable.selection
           this.codeDbForm.temps = this.$refs.tempTable.selection
-          if (this.codeDbForm.dbFieldInfos.length == 0) {
+          if (this.codeDbForm.dbFieldInfos.length === 0) {
             this.$message.warning('请选择字段')
             return
           }
-          if (this.codeDbForm.temps.length == 0) {
+          if (this.codeDbForm.temps.length === 0) {
             this.$message.warning('请选择模板')
             return
           }
           this.genLoading = true
           codeApi.codeGenerator(this.codeDbForm).then(res => {
             if (res.code === 1) {
-              if (res.data == '') {
+              if (res.data === '') {
                 this.$message.error('生成失败')
                 return
               }
@@ -361,11 +352,11 @@ export default {
     },
     download(data, filename) {
       if (!data || data.data) {
-        this.$message.error("生成失败")
+        this.$message.error('生成失败')
         return
       }
-      let url = window.URL.createObjectURL(new Blob([data]))
-      let link = document.createElement('a')
+      const url = window.URL.createObjectURL(new Blob([data]))
+      const link = document.createElement('a')
       link.style.display = 'none'
       link.href = url
       link.setAttribute('download', filename)
@@ -373,7 +364,7 @@ export default {
       document.body.appendChild(link)
       link.click()
     },
-    reSetData(){
+    reSetData() {
       this.codeDbForm.databaseSelVal = ''
       this.codeDbForm.tableName = ''
       this.codeDbForm.className = ''
@@ -382,7 +373,7 @@ export default {
       this.fields = []
       this.tables = []
     },
-    reSetCodeScheme(){
+    reSetCodeScheme() {
       this.codeDbForm.codeSchemeId = ''
       this.temps = []
     }

@@ -1,4 +1,4 @@
-import { getToken, setToken, removeToken, getUserId, setUserId ,getMenus,setMenus,removeMenus} from '@/utils/auth'
+import { getToken, setToken, removeToken, getUserId, setUserId, getMenus, setMenus, removeMenus } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
 const getDefaultState = () => {
@@ -36,7 +36,7 @@ const mutations = {
   SET_MENUS: (state, menus) => {
     state.menus = menus
   },
-  REMOVW_MENUS:(state)=>{
+  REMOVW_MENUS: (state) => {
     state.menus = []
   }
 }
@@ -48,19 +48,19 @@ const actions = {
     commit('SET_TOKEN', token)
     commit('SET_USER_NAME', username)
     commit('SET_USER_ID', userId)
-    
+
     setToken(token)
     setUserId(userId)
   },
 
-  setMenus({ commit },menus){
+  setMenus({ commit }, menus) {
     commit('REMOVW_MENUS')
     commit('SET_MENUS', menus)
     removeMenus()
     setMenus(menus)
   },
 
-  removeMenus({ commit }){
+  removeMenus({ commit }) {
     removeMenus()
   },
 
