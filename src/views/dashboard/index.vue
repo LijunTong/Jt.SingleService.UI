@@ -2,9 +2,9 @@
   <div class="app-container">
     <el-card>
       <el-alert
-        title="CMS"
+        title="single"
         type="info"
-        description="内容管理平台"
+        description="单体应用框架"
         show-icon
         :closable="false"
       />

@@ -26,15 +26,13 @@
             userInfo.loginTime
           }}</el-descriptions-item>
           <el-descriptions-item
-            v-for="(userRole, index) in userInfo.userRoles"
-            :key="index"
             label="角色"
           >
-            <el-tag>{{ userRole.role.name }}</el-tag>
+            <el-tag
+              v-for="(userRole, index) in userInfo.userRoles"
+              :key="index"
+            >{{ userRole.role.name }}</el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="粉丝数">{{
-            userInfo.followCount
-          }}</el-descriptions-item>
         </el-descriptions>
       </el-tab-pane>
       <el-tab-pane label="密码修改" name="password">

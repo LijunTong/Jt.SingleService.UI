@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'cms',
+  title: 'single',
   tagsView: true,
   /**
    * @type {boolean} true | false

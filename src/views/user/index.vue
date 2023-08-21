@@ -2,13 +2,21 @@
   <div class="app-container">
     <div class="table-tool">
       <el-tooltip content="详情" placement="bottom" effect="light">
-        <el-button type="info" size="mini" @click="details"
-          ><i class="iconfont icon-eye"
+        <el-button
+          type="info"
+          size="mini"
+          @click="details"
+        ><i
+          class="iconfont icon-eye"
         /></el-button>
       </el-tooltip>
       <el-tooltip content="分配角色" placement="bottom" effect="light">
-        <el-button type="primary" size="mini" @click="bind"
-          ><i class="iconfont icon-select"
+        <el-button
+          type="primary"
+          size="mini"
+          @click="bind"
+        ><i
+          class="iconfont icon-select"
         /></el-button>
       </el-tooltip>
       <!-- <el-button type="primary" size="mini" @click="add"
@@ -39,8 +47,10 @@
       </el-table-column>
       <el-table-column prop="avatar" label="头像">
         <template slot-scope="scope">
-          <img class="cellImg" :src="getImgUrl(scope.row.avatar)"
-        /></template>
+          <img
+            class="cellImg"
+            :src="getImgUrl(scope.row.avatar)"
+          ></template>
       </el-table-column>
       <el-table-column prop="userName" label="用户名" />
       <el-table-column prop="userName" label="角色">
@@ -87,23 +97,33 @@
         :rules="rules"
         label-width="100px"
       >
-        <el-form-item label="用户名" prop="userName"
-          ><el-input v-model="formData.userName"
+        <el-form-item
+          label="用户名"
+          prop="userName"
+        ><el-input
+          v-model="formData.userName"
         /></el-form-item>
-        <el-form-item label="密码" prop="password"
-          ><el-input v-model="formData.password"
+        <el-form-item
+          label="密码"
+          prop="password"
+        ><el-input
+          v-model="formData.password"
         /></el-form-item>
-        <el-form-item label="注册时间" prop="registerTime"
-          ><el-date-picker
-            v-model="formData.registerTime"
-            type="datetime"
-            placeholder="选择日期时间"
+        <el-form-item
+          label="注册时间"
+          prop="registerTime"
+        ><el-date-picker
+          v-model="formData.registerTime"
+          type="datetime"
+          placeholder="选择日期时间"
         /></el-form-item>
-        <el-form-item label="登录时间" prop="loginTime"
-          ><el-date-picker
-            v-model="formData.loginTime"
-            type="datetime"
-            placeholder="选择日期时间"
+        <el-form-item
+          label="登录时间"
+          prop="loginTime"
+        ><el-date-picker
+          v-model="formData.loginTime"
+          type="datetime"
+          placeholder="选择日期时间"
         /></el-form-item>
       </el-form>
       <span
@@ -115,8 +135,7 @@
         <el-button
           type="primary"
           @click="dialogParams.type === 1 ? addSubmit() : editSubmit()"
-          >提 交</el-button
-        >
+        >提 交</el-button>
       </span>
       <el-descriptions
         v-show="dialogParams.type === 3"
@@ -137,15 +156,13 @@
           formData.loginTime
         }}</el-descriptions-item>
         <el-descriptions-item
-          v-for="(userRole, index) in formData.userRoles"
-          :key="index"
           label="角色"
         >
-          <el-tag>{{ userRole.role.name }}</el-tag>
+          <el-tag
+            v-for="(userRole, index) in formData.userRoles"
+            :key="index"
+          >{{ userRole.role.name }}</el-tag>
         </el-descriptions-item>
-        <el-descriptions-item label="粉丝数">{{
-          formData.followCount
-        }}</el-descriptions-item>
       </el-descriptions>
       <span
         v-show="dialogParams.type === 3"
@@ -228,7 +245,7 @@ export default {
   },
   computed: {
     // 计算属性的 getter
-    avatar: function () {
+    avatar: function() {
       // `this` 指向 vm 实例
       return process.env.VUE_APP_BASE_API + this.formData.avatar
     }
