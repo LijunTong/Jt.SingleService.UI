@@ -7,8 +7,6 @@ Vue.use(Router)
 /* Layout */
 import Layout from '@/layout'
 
-import FrontLayout from '@/layout/FrontLayout'
-
 export const defaultRoutes = [
   {
     path: '/login',
@@ -80,7 +78,7 @@ function initRoutes(menu) {
       route = {
         path: menu.path,
         name: menu.name,
-        component: menu.type === 0 ? Layout : FrontLayout, // 继承layout布局
+        component: Layout, // 继承layout布局
         hidden: !menu.hidden,
         type: menu.type,
         meta: { title: menu.title, icon: menu.icon, affix: menu.affix }, //, affix: true
@@ -95,7 +93,7 @@ function initRoutes(menu) {
       route = {
         name: menu.name + '1',
         path: menu.path,
-        component: menu.type === 0 ? Layout : FrontLayout, // 继承layout布局
+        component: Layout, // 继承layout布局
         hidden: !menu.hidden,
         type: menu.type,
         redirect: menu.redirect,
