@@ -8,12 +8,12 @@ WORKDIR /app
 COPY . .
 
 # 安装依赖
-# RUN npm install cnpm -g --no-progress --registry=https://registry.npm.taobao.org
+RUN npm install cnpm -g --no-progress --registry=https://registry.npm.taobao.org
 
-RUN npm install --no-progress
+RUN cnpm install --no-progress
 
 # 构建
-RUN npm run build:prod
+RUN cnpm run build:prod
 
 # production stage
 # 使用nginx镜像
