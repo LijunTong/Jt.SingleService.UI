@@ -10,7 +10,7 @@ COPY . .
 # 安装依赖
 # RUN npm install cnpm -g --no-progress --registry=https://registry.npm.taobao.org
 
-# RUN cnpm install --no-progress
+RUN npm install --no-progress
 
 # 构建
 RUN npm run build:prod
